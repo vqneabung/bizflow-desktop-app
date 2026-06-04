@@ -1,0 +1,124 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:bizflow_desktop_app.ViewModels"
+             x:Class="bizflow_desktop_app.Views.ProductFormView"
+             x:DataType="vm:ProductFormViewModel">
+
+    <ScrollViewer>
+        <StackPanel Spacing="16" MaxWidth="800">
+
+            <!-- Header -->
+            <StackPanel Spacing="4">
+                <Button Content="←  Back"
+                        Command="{Binding CancelCommand}"
+                        Background="Transparent"
+                        Foreground="{DynamicResource AccentPurple}"
+                        FontSize="14"
+                        Padding="0"
+                        HorizontalAlignment="Left" />
+                <TextBlock Text="{Binding Title}"
+                           FontSize="20"
+                           FontWeight="Bold" />
+            </StackPanel>
+
+            <!-- Error banner -->
+            <Border IsVisible="{Binding HasError}"
+                    Background="#FEF2F2"
+                    CornerRadius="8" Padding="12"
+                    BorderBrush="#FCA5A5" BorderThickness="1">
+                <TextBlock Text="{Binding ErrorMessage}"
+                           Foreground="#DC2626"
+                           FontSize="13" />
+            </Border>
+
+            <!-- Form card -->
+            <Border Background="{DynamicResource CardBg}"
+                    CornerRadius="12" Padding="24"
+                    BorderBrush="#E5E7EB" BorderThickness="1">
+
+                <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto"
+                      ColumnDefinitions="*,*"
+                      RowSpacing="16" ColumnSpacing="16">
+
+                    <!-- Row 0: Name (full width) -->
+                    <TextBox Grid.Row="0" Grid.ColumnSpan="2"
+                             PlaceholderText="Product name *"
+                             Text="{Binding Name, Mode=TwoWay}"
+                             FontSize="14" Padding="12,10" />
+
+                    <!-- Row 1: Category + Primary Unit -->
+                    <TextBox Grid.Row="1" Grid.Column="0"
+                             PlaceholderText="Category"
+                             Text="{Binding Category, Mode=TwoWay}"
+                             FontSize="14" Padding="12,10" />
+                    <TextBox Grid.Row="1" Grid.Column="1"
+                             PlaceholderText="Primary unit"
+                             Text="{Binding PrimaryUnit, Mode=TwoWay}"
+                             FontSize="14" Padding="12,10" />
+
+                    <!-- Row 2: Price + Cost Price -->
+                    <TextBox Grid.Row="2" Grid.Column="0"
+                             PlaceholderText="Price *"
+                             Text="{Binding PriceText, Mode=TwoWay}"
+                             FontSize="14" Padding="12,10" />
+                    <TextBox Grid.Row="2" Grid.Column="1"
+                             PlaceholderText="Cost price"
+                             Text="{Binding CostPriceText, Mode=TwoWay}"
+                             FontSize="14" Padding="12,10" />
+
+                    <!-- Row 3: Stock + Min Stock -->
+                    <TextBox Grid.Row="3" Grid.Column="0"
+                             PlaceholderText="Stock *"
+                             Text="{Binding StockText, Mode=TwoWay}"
+                             FontSize="14" Padding="12,10" />
+                    <TextBox Grid.Row="3" Grid.Column="1"
+                             PlaceholderText="Min stock"
+                             Text="{Binding MinStockText, Mode=TwoWay}"
+                             FontSize="14" Padding="12,10" />
+
+                    <!-- Row 4: Barcode (full width) -->
+                    <TextBox Grid.Row="4" Grid.ColumnSpan="2"
+                             PlaceholderText="Barcode"
+                             Text="{Binding Barcode, Mode=TwoWay}"
+                             FontSize="14" Padding="12,10" />
+
+                    <!-- Row 5: Image URL (full width) -->
+                    <TextBox Grid.Row="5" Grid.ColumnSpan="2"
+                             PlaceholderText="Image URL"
+                             Text="{Binding ImageUrl, Mode=TwoWay}"
+                             FontSize="14" Padding="12,10" />
+
+                    <!-- Divider -->
+                    <Border Grid.Row="6" Grid.ColumnSpan="2"
+                            Height="1" Background="#E5E7EB" />
+
+                    <!-- Row 6: Action buttons -->
+                    <StackPanel Grid.Row="7" Grid.ColumnSpan="2"
+                                Orientation="Horizontal" Spacing="12">
+                        <Button Content="{Binding SubmitText}"
+                                Command="{Binding SaveCommand}"
+                                Background="{DynamicResource AccentPurple}"
+                                Foreground="White"
+                                FontSize="14"
+                                FontWeight="SemiBold"
+                                Padding="24,10"
+                                CornerRadius="8" />
+                        <Button Content="Cancel"
+                                Command="{Binding CancelCommand}"
+                                Background="Transparent"
+                                Foreground="Gray"
+                                FontSize="14"
+                                Padding="24,10"
+                                CornerRadius="8" />
+                    </StackPanel>
+                </Grid>
+            </Border>
+
+            <!-- Loading -->
+            <ProgressBar IsIndeterminate="True"
+                         IsVisible="{Binding IsSubmitting}"
+                         Height="3"
+                         Foreground="{DynamicResource AccentPurple}" />
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

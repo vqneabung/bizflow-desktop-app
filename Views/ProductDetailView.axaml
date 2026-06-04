@@ -1,0 +1,125 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:bizflow_desktop_app.ViewModels"
+             x:Class="bizflow_desktop_app.Views.ProductDetailView"
+             x:DataType="vm:ProductDetailViewModel">
+
+    <ScrollViewer>
+        <StackPanel Spacing="16">
+
+            <!-- Back button -->
+            <Button Content="←  Back to Products"
+                    Command="{Binding GoBackCommand}"
+                    Background="Transparent"
+                    Foreground="{DynamicResource AccentPurple}"
+                    FontSize="14"
+                    Padding="0"
+                    HorizontalAlignment="Left" />
+
+            <!-- Loading -->
+            <ProgressBar IsIndeterminate="True"
+                         IsVisible="{Binding IsLoading}"
+                         Height="3"
+                         Foreground="{DynamicResource AccentPurple}" />
+
+            <!-- Error -->
+            <Border IsVisible="{Binding HasError}"
+                    Background="#FEF2F2"
+                    CornerRadius="12" Padding="24">
+                <TextBlock Text="{Binding ErrorMessage}"
+                           Foreground="#DC2626"
+                           FontSize="14" />
+            </Border>
+
+            <!-- Detail card -->
+            <Border Background="{DynamicResource CardBg}"
+                    CornerRadius="12" Padding="24"
+                    BorderBrush="#E5E7EB" BorderThickness="1">
+
+                <Grid ColumnDefinitions="1.5*,2*" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto, Auto,Auto" RowSpacing="16" ColumnSpacing="32">
+
+                    <!-- Left column: basic info -->
+                    <TextBlock Grid.Row="0" Grid.ColumnSpan="2"
+                               Text="{Binding Product.Name}"
+                               FontSize="24"
+                               FontWeight="Bold" />
+
+                    <StackPanel Grid.Row="1" Grid.Column="0" Spacing="4">
+                        <TextBlock Text="Category" FontSize="12" Foreground="Gray" />
+                        <TextBlock Text="{Binding Product.Category}" FontSize="15" />
+                    </StackPanel>
+
+                    <StackPanel Grid.Row="1" Grid.Column="1" Spacing="4">
+                        <TextBlock Text="Barcode" FontSize="12" Foreground="Gray" />
+                        <TextBlock Text="{Binding Product.Barcode}" FontSize="15" />
+                    </StackPanel>
+
+                    <StackPanel Grid.Row="2" Grid.Column="0" Spacing="4">
+                        <TextBlock Text="Price" FontSize="12" Foreground="Gray" />
+                        <TextBlock Text="{Binding PriceDisplay}" FontSize="20" FontWeight="Bold"
+                                   Foreground="{DynamicResource AccentPurple}" />
+                    </StackPanel>
+
+                    <StackPanel Grid.Row="2" Grid.Column="1" Spacing="4">
+                        <TextBlock Text="Cost Price" FontSize="12" Foreground="Gray" />
+                        <TextBlock Text="{Binding CostPriceDisplay}" FontSize="15" />
+                    </StackPanel>
+
+                    <StackPanel Grid.Row="3" Grid.Column="0" Spacing="4">
+                        <TextBlock Text="Stock" FontSize="12" Foreground="Gray" />
+                        <TextBlock Text="{Binding StockDisplay}" FontSize="15" />
+                    </StackPanel>
+
+                    <StackPanel Grid.Row="3" Grid.Column="1" Spacing="4">
+                        <TextBlock Text="Primary Unit" FontSize="12" Foreground="Gray" />
+                        <TextBlock Text="{Binding Product.PrimaryUnit}" FontSize="15" />
+                    </StackPanel>
+
+                    <StackPanel Grid.Row="4" Grid.ColumnSpan="2" Spacing="4">
+                        <TextBlock Text="Status" FontSize="12" Foreground="Gray" />
+                        <TextBlock Text="{Binding StatusText}"
+                                   FontSize="15"
+                                   FontWeight="SemiBold"
+                                   Foreground="{DynamicResource AccentPurple}" />
+                    </StackPanel>
+
+                    <!-- Divider -->
+                    <Border Grid.Row="5" Grid.ColumnSpan="2"
+                            Height="1" Background="#E5E7EB" />
+
+                    <StackPanel Grid.Row="6" Grid.ColumnSpan="2" Spacing="4">
+                        <TextBlock Text="Date Info" FontSize="12" Foreground="Gray" />
+                        <TextBlock Text="{Binding CreatedDate, StringFormat='Created: {0}'}" FontSize="13" />
+                        <TextBlock Text="{Binding UpdatedDate, StringFormat='Updated: {0}'}" FontSize="13" />
+                    </StackPanel>
+
+                    <!-- Divider -->
+                    <Border Grid.Row="7" Grid.ColumnSpan="2"
+                            Height="1" Background="#E5E7EB" />
+
+                    <!-- Action buttons -->
+                    <StackPanel Grid.Row="8" Grid.ColumnSpan="2"
+                                Orientation="Horizontal" Spacing="12">
+                        <Button Content="✏  Edit Product"
+                                Command="{Binding EditCommand}"
+                                Background="{DynamicResource AccentPurple}"
+                                Foreground="White"
+                                FontSize="14"
+                                FontWeight="SemiBold"
+                                Padding="20,10"
+                                CornerRadius="8" />
+                        <Button Content="🗑  Deactivate"
+                                Command="{Binding DeactivateCommand}"
+                                Background="#FEF2F2"
+                                Foreground="#DC2626"
+                                FontSize="14"
+                                Padding="20,10"
+                                CornerRadius="8"
+                                BorderBrush="#FCA5A5"
+                                BorderThickness="1" />
+                    </StackPanel>
+                </Grid>
+            </Border>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

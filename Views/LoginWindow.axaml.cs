@@ -1,7 +1,9 @@
+using System;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using bizflow_desktop_app.ViewModels;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace bizflow_desktop_app.Views;
 
@@ -16,7 +18,7 @@ public partial class LoginWindow : Window
         InitializeComponent();
     }
 
-    protected override void OnDataContextChanged(System.EventArgs e)
+    protected override void OnDataContextChanged(EventArgs e)
     {
         base.OnDataContextChanged(e);
 
@@ -28,7 +30,6 @@ public partial class LoginWindow : Window
 
     private void OnLoginSucceeded()
     {
-        // Chạy trên UI thread
         Avalonia.Threading.Dispatcher.UIThread.Post(() =>
         {
             var lifetime = Application.Current?.ApplicationLifetime
@@ -36,12 +37,15 @@ public partial class LoginWindow : Window
 
             if (lifetime is not null)
             {
-                // Mở MainWindow (dashboard)
-                var mainWindow = new MainWindow();
+                var services = (Application.Current as App)?.Services;
+                if (services is null) return;
+
+                var mainWindow = new MainWindow
+                {
+                    DataContext = services.GetRequiredService<MainWindowViewModel>()
+                };
                 lifetime.MainWindow = mainWindow;
                 mainWindow.Show();
-
-                // Đóng LoginWindow
                 Close();
             }
         });

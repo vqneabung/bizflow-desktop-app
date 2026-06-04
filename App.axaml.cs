@@ -14,7 +14,8 @@ namespace bizflow_desktop_app;
 
 public partial class App : Application
 {
-    private IServiceProvider? _services;
+    /// <summary>Expose DI container for resolving MainWindow after login.</summary>
+    public IServiceProvider? Services { get; private set; }
 
     public override void Initialize()
     {
@@ -46,11 +47,11 @@ public partial class App : Application
         // Application services (API, session, ViewModels, HttpClient with Polly)
         services.AddApplicationServices(configuration);
 
-        _services = services.BuildServiceProvider();
+        Services = services.BuildServiceProvider();
 
         // Verify configuration at startup
-        var settings = _services.GetRequiredService<Microsoft.Extensions.Options.IOptions<Models.ApiSettings>>().Value;
-        var logger = _services.GetRequiredService<ILogger<App>>();
+        var settings = Services.GetRequiredService<Microsoft.Extensions.Options.IOptions<Models.ApiSettings>>().Value;
+        var logger = Services.GetRequiredService<ILogger<App>>();
         logger.LogInformation("Starting Bizflow Desktop — API: {BaseUrl}", settings.BaseUrl);
 
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktopApp)
@@ -58,7 +59,7 @@ public partial class App : Application
             // Start with LoginWindow (resolved via DI)
             desktopApp.MainWindow = new LoginWindow
             {
-                DataContext = _services.GetRequiredService<LoginViewModel>(),
+                DataContext = Services.GetRequiredService<LoginViewModel>(),
             };
         }
 

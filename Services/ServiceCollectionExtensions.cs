@@ -9,6 +9,7 @@ using Microsoft.Extensions.Options;
 using Polly;
 using Polly.Extensions.Http;
 
+
 namespace bizflow_desktop_app.Services;
 
 /// <summary>
@@ -25,9 +26,6 @@ public static class ServiceCollectionExtensions
     {
         // === Configuration ===
         services.Configure<ApiSettings>(configuration.GetSection(ApiSettings.SectionName));
-        services.AddOptions<ApiSettings>()
-            .ValidateDataAnnotations()
-            .ValidateOnStart();
 
         // === Services ===
         services.AddSingleton<ISessionService, SessionService>();
@@ -45,9 +43,23 @@ public static class ServiceCollectionExtensions
         .AddPolicyHandler(GetRetryPolicy())
         .AddPolicyHandler(GetCircuitBreakerPolicy());
 
+        // === HttpClient for ProductService ===
+        services.AddHttpClient<IProductService, ProductService>((sp, client) =>
+        {
+            var settings = sp.GetRequiredService<IOptions<ApiSettings>>().Value;
+            client.BaseAddress = new Uri(settings.BaseUrl);
+            client.Timeout = TimeSpan.FromSeconds(settings.TimeoutSeconds);
+        })
+        .AddHttpMessageHandler<AuthMessageHandler>()
+        .AddPolicyHandler(GetRetryPolicy())
+        .AddPolicyHandler(GetCircuitBreakerPolicy());
+
         // === ViewModels ===
         services.AddTransient<LoginViewModel>();
         services.AddTransient<MainWindowViewModel>();
+        services.AddTransient<ProductListViewModel>();
+        services.AddTransient<ProductDetailViewModel>();
+        services.AddTransient<ProductFormViewModel>();
 
         return services;
     }

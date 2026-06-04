@@ -1,20 +1,138 @@
 <Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:vm="using:bizflow_desktop_app.ViewModels"
+        xmlns:local="using:bizflow_desktop_app.Views"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        mc:Ignorable="d" d:DesignWidth="1366" d:DesignHeight="900"
         x:Class="bizflow_desktop_app.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"
+        Width="1366" Height="900"
+        MinWidth="1024" MinHeight="700"
         Icon="/Assets/avalonia-logo.ico"
-        Title="bizflow_desktop_app">
+        Title="Bizflow Admin"
+        WindowStartupLocation="CenterScreen">
 
-    <Design.DataContext>
-        <!-- This only sets the DataContext for the previewer in an IDE,
-             to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
-        <vm:MainWindowViewModel/>
-    </Design.DataContext>
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.ThemeDictionaries>
+                <ResourceDictionary x:Key="Light">
+                    <SolidColorBrush x:Key="SidebarBg" Color="#1E1B2E" />
+                    <SolidColorBrush x:Key="SidebarText" Color="#A1A0B0" />
+                    <SolidColorBrush x:Key="SidebarActive" Color="#7C3AED" />
+                    <SolidColorBrush x:Key="SidebarHover" Color="#2D2A3E" />
+                    <SolidColorBrush x:Key="HeaderBg" Color="#FFFFFF" />
+                    <SolidColorBrush x:Key="PageBg" Color="#F5F5F7" />
+                    <SolidColorBrush x:Key="CardBg" Color="#FFFFFF" />
+                    <SolidColorBrush x:Key="AccentPurple" Color="#7C3AED" />
+                </ResourceDictionary>
+                <ResourceDictionary x:Key="Dark">
+                    <SolidColorBrush x:Key="SidebarBg" Color="#0F0D1A" />
+                    <SolidColorBrush x:Key="SidebarText" Color="#6B6A7A" />
+                    <SolidColorBrush x:Key="SidebarActive" Color="#8B5CF6" />
+                    <SolidColorBrush x:Key="SidebarHover" Color="#1F1D2E" />
+                    <SolidColorBrush x:Key="HeaderBg" Color="#1A1A2E" />
+                    <SolidColorBrush x:Key="PageBg" Color="#12121E" />
+                    <SolidColorBrush x:Key="CardBg" Color="#1A1A2E" />
+                    <SolidColorBrush x:Key="AccentPurple" Color="#8B5CF6" />
+                </ResourceDictionary>
+            </ResourceDictionary.ThemeDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
 
-    <TextBlock Text="{Binding Greeting}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+    <Grid ColumnDefinitions="260,*">
+        <!-- ===== SIDEBAR ===== -->
+        <Border Background="{DynamicResource SidebarBg}">
+            <Grid RowDefinitions="Auto,*,Auto" Margin="0">
+                <!-- Brand -->
+                <StackPanel Grid.Row="0" Margin="20,24,20,20" Spacing="4">
+                    <TextBlock Text="Bizflow"
+                               FontSize="22"
+                               FontWeight="Bold"
+                               Foreground="White" />
+                    <TextBlock Text="Admin Console"
+                               FontSize="12"
+                               Foreground="{DynamicResource SidebarText}" />
+                </StackPanel>
+
+                <!-- Navigation -->
+                <StackPanel Grid.Row="1" Spacing="2" Margin="12,0">
+                    <Button Content="📦  Products"
+                            Command="{Binding GoToProductsCommand}"
+                            Background="Transparent"
+                            Foreground="{DynamicResource SidebarText}"
+                            HorizontalAlignment="Stretch"
+                            HorizontalContentAlignment="Left"
+                            Padding="16,10"
+                            CornerRadius="8"
+                            FontSize="14">
+                        <Button.Styles>
+                            <Style Selector="Button:pointerover">
+                                <Setter Property="Background" Value="{DynamicResource SidebarHover}" />
+                                <Setter Property="Foreground" Value="White" />
+                            </Style>
+                        </Button.Styles>
+                    </Button>
+                </StackPanel>
+
+                <!-- User info -->
+                <Border Grid.Row="2" Background="{DynamicResource SidebarHover}" Padding="16,12">
+                    <Grid ColumnDefinitions="*,Auto">
+                        <StackPanel>
+                            <TextBlock Text="{Binding UserName}"
+                                       FontSize="13"
+                                       Foreground="White"
+                                       FontWeight="SemiBold" />
+                            <TextBlock Text="{Binding UserEmail}"
+                                       FontSize="11"
+                                       Foreground="{DynamicResource SidebarText}" />
+                        </StackPanel>
+                        <Button Grid.Column="1"
+                                Content="Logout"
+                                Command="{Binding LogoutCommand}"
+                                Background="Transparent"
+                                Foreground="{DynamicResource SidebarText}"
+                                FontSize="12"
+                                Padding="8,4" />
+                    </Grid>
+                </Border>
+            </Grid>
+        </Border>
+
+        <!-- ===== MAIN CONTENT ===== -->
+        <Border Grid.Column="1" Background="{DynamicResource PageBg}">
+            <Grid RowDefinitions="Auto,*">
+                <!-- Header bar -->
+                <Border Grid.Row="0"
+                        Background="{DynamicResource HeaderBg}"
+                        Padding="24,16"
+                        BorderBrush="#E5E7EB"
+                        BorderThickness="0,0,0,1">
+                    <TextBlock Text="Dashboard"
+                               FontSize="18"
+                               FontWeight="SemiBold"
+                               Foreground="{DynamicResource AccentPurple}" />
+                </Border>
+
+                <!-- Content area (page switching) -->
+                <Border Grid.Row="1" Padding="24" CornerRadius="0">
+                    <ContentControl Content="{Binding CurrentPage}" />
+                </Border>
+            </Grid>
+        </Border>
+    </Grid>
+
+    <!-- DataTemplate for page switching -->
+    <Window.DataTemplates>
+        <DataTemplate DataType="vm:ProductListViewModel">
+            <local:ProductListView />
+        </DataTemplate>
+        <DataTemplate DataType="vm:ProductDetailViewModel">
+            <local:ProductDetailView />
+        </DataTemplate>
+        <DataTemplate DataType="vm:ProductFormViewModel">
+            <local:ProductFormView />
+        </DataTemplate>
+    </Window.DataTemplates>
 
 </Window>
