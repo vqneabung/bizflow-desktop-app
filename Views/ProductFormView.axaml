@@ -10,23 +10,23 @@
             <!-- Header -->
             <StackPanel Spacing="4">
                 <Button Content="←  Back"
-                        Command="{Binding CancelCommand}"
+                        Command="{ReflectionBinding CancelCommand}"
                         Background="Transparent"
                         Foreground="{DynamicResource AccentPurple}"
                         FontSize="14"
                         Padding="0"
                         HorizontalAlignment="Left" />
-                <TextBlock Text="{Binding Title}"
+                <TextBlock Text="{ReflectionBinding Title}"
                            FontSize="20"
                            FontWeight="Bold" />
             </StackPanel>
 
             <!-- Error banner -->
-            <Border IsVisible="{Binding HasError}"
+            <Border IsVisible="{ReflectionBinding HasError}"
                     Background="#FEF2F2"
                     CornerRadius="8" Padding="12"
                     BorderBrush="#FCA5A5" BorderThickness="1">
-                <TextBlock Text="{Binding ErrorMessage}"
+                <TextBlock Text="{ReflectionBinding ErrorMessage}"
                            Foreground="#DC2626"
                            FontSize="13" />
             </Border>
@@ -43,49 +43,49 @@
                     <!-- Row 0: Name (full width) -->
                     <TextBox Grid.Row="0" Grid.ColumnSpan="2"
                              PlaceholderText="Product name *"
-                             Text="{Binding Name, Mode=TwoWay}"
+                             Text="{ReflectionBinding Name, Mode=TwoWay}"
                              FontSize="14" Padding="12,10" />
 
                     <!-- Row 1: Category + Primary Unit -->
                     <TextBox Grid.Row="1" Grid.Column="0"
                              PlaceholderText="Category"
-                             Text="{Binding Category, Mode=TwoWay}"
+                             Text="{ReflectionBinding Category, Mode=TwoWay}"
                              FontSize="14" Padding="12,10" />
                     <TextBox Grid.Row="1" Grid.Column="1"
                              PlaceholderText="Primary unit"
-                             Text="{Binding PrimaryUnit, Mode=TwoWay}"
+                             Text="{ReflectionBinding PrimaryUnit, Mode=TwoWay}"
                              FontSize="14" Padding="12,10" />
 
                     <!-- Row 2: Price + Cost Price -->
                     <TextBox Grid.Row="2" Grid.Column="0"
                              PlaceholderText="Price *"
-                             Text="{Binding PriceText, Mode=TwoWay}"
+                             Text="{ReflectionBinding PriceText, Mode=TwoWay}"
                              FontSize="14" Padding="12,10" />
                     <TextBox Grid.Row="2" Grid.Column="1"
                              PlaceholderText="Cost price"
-                             Text="{Binding CostPriceText, Mode=TwoWay}"
+                             Text="{ReflectionBinding CostPriceText, Mode=TwoWay}"
                              FontSize="14" Padding="12,10" />
 
                     <!-- Row 3: Stock + Min Stock -->
                     <TextBox Grid.Row="3" Grid.Column="0"
                              PlaceholderText="Stock *"
-                             Text="{Binding StockText, Mode=TwoWay}"
+                             Text="{ReflectionBinding StockText, Mode=TwoWay}"
                              FontSize="14" Padding="12,10" />
                     <TextBox Grid.Row="3" Grid.Column="1"
                              PlaceholderText="Min stock"
-                             Text="{Binding MinStockText, Mode=TwoWay}"
+                             Text="{ReflectionBinding MinStockText, Mode=TwoWay}"
                              FontSize="14" Padding="12,10" />
 
                     <!-- Row 4: Barcode (full width) -->
                     <TextBox Grid.Row="4" Grid.ColumnSpan="2"
                              PlaceholderText="Barcode"
-                             Text="{Binding Barcode, Mode=TwoWay}"
+                             Text="{ReflectionBinding Barcode, Mode=TwoWay}"
                              FontSize="14" Padding="12,10" />
 
                     <!-- Row 5: Image URL (full width) -->
                     <TextBox Grid.Row="5" Grid.ColumnSpan="2"
                              PlaceholderText="Image URL"
-                             Text="{Binding ImageUrl, Mode=TwoWay}"
+                             Text="{ReflectionBinding ImageUrl, Mode=TwoWay}"
                              FontSize="14" Padding="12,10" />
 
                     <!-- Divider -->
@@ -95,8 +95,8 @@
                     <!-- Row 6: Action buttons -->
                     <StackPanel Grid.Row="7" Grid.ColumnSpan="2"
                                 Orientation="Horizontal" Spacing="12">
-                        <Button Content="{Binding SubmitText}"
-                                Command="{Binding SaveCommand}"
+                        <Button Content="{ReflectionBinding SubmitText}"
+                                Command="{ReflectionBinding SaveCommand}"
                                 Background="{DynamicResource AccentPurple}"
                                 Foreground="White"
                                 FontSize="14"
@@ -104,7 +104,7 @@
                                 Padding="24,10"
                                 CornerRadius="8" />
                         <Button Content="Cancel"
-                                Command="{Binding CancelCommand}"
+                                Command="{ReflectionBinding CancelCommand}"
                                 Background="Transparent"
                                 Foreground="Gray"
                                 FontSize="14"
@@ -116,7 +116,7 @@
 
             <!-- Loading -->
             <ProgressBar IsIndeterminate="True"
-                         IsVisible="{Binding IsSubmitting}"
+                         IsVisible="{ReflectionBinding IsSubmitting}"
                          Height="3"
                          Foreground="{DynamicResource AccentPurple}" />
         </StackPanel>

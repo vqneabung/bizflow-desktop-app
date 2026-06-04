@@ -9,7 +9,7 @@
 
             <!-- Back button -->
             <Button Content="←  Back to Products"
-                    Command="{Binding GoBackCommand}"
+                    Command="{ReflectionBinding GoBackCommand}"
                     Background="Transparent"
                     Foreground="{DynamicResource AccentPurple}"
                     FontSize="14"
@@ -18,15 +18,15 @@
 
             <!-- Loading -->
             <ProgressBar IsIndeterminate="True"
-                         IsVisible="{Binding IsLoading}"
+                         IsVisible="{ReflectionBinding IsLoading}"
                          Height="3"
                          Foreground="{DynamicResource AccentPurple}" />
 
             <!-- Error -->
-            <Border IsVisible="{Binding HasError}"
+            <Border IsVisible="{ReflectionBinding HasError}"
                     Background="#FEF2F2"
                     CornerRadius="12" Padding="24">
-                <TextBlock Text="{Binding ErrorMessage}"
+                <TextBlock Text="{ReflectionBinding ErrorMessage}"
                            Foreground="#DC2626"
                            FontSize="14" />
             </Border>
@@ -40,18 +40,18 @@
 
                     <!-- Left column: basic info -->
                     <TextBlock Grid.Row="0" Grid.ColumnSpan="2"
-                               Text="{Binding Product.Name}"
+                               Text="{ReflectionBinding Product.Name}"
                                FontSize="24"
                                FontWeight="Bold" />
 
                     <StackPanel Grid.Row="1" Grid.Column="0" Spacing="4">
                         <TextBlock Text="Category" FontSize="12" Foreground="Gray" />
-                        <TextBlock Text="{Binding Product.Category}" FontSize="15" />
+                        <TextBlock Text="{ReflectionBinding Product.Category}" FontSize="15" />
                     </StackPanel>
 
                     <StackPanel Grid.Row="1" Grid.Column="1" Spacing="4">
                         <TextBlock Text="Barcode" FontSize="12" Foreground="Gray" />
-                        <TextBlock Text="{Binding Product.Barcode}" FontSize="15" />
+                        <TextBlock Text="{ReflectionBinding Product.Barcode}" FontSize="15" />
                     </StackPanel>
 
                     <StackPanel Grid.Row="2" Grid.Column="0" Spacing="4">
@@ -72,7 +72,7 @@
 
                     <StackPanel Grid.Row="3" Grid.Column="1" Spacing="4">
                         <TextBlock Text="Primary Unit" FontSize="12" Foreground="Gray" />
-                        <TextBlock Text="{Binding Product.PrimaryUnit}" FontSize="15" />
+                        <TextBlock Text="{ReflectionBinding Product.PrimaryUnit}" FontSize="15" />
                     </StackPanel>
 
                     <StackPanel Grid.Row="4" Grid.ColumnSpan="2" Spacing="4">
@@ -101,7 +101,7 @@
                     <StackPanel Grid.Row="8" Grid.ColumnSpan="2"
                                 Orientation="Horizontal" Spacing="12">
                         <Button Content="✏  Edit Product"
-                                Command="{Binding EditCommand}"
+                                Command="{ReflectionBinding EditCommand}"
                                 Background="{DynamicResource AccentPurple}"
                                 Foreground="White"
                                 FontSize="14"
@@ -109,7 +109,7 @@
                                 Padding="20,10"
                                 CornerRadius="8" />
                         <Button Content="🗑  Deactivate"
-                                Command="{Binding DeactivateCommand}"
+                                Command="{ReflectionBinding DeactivateCommand}"
                                 Background="#FEF2F2"
                                 Foreground="#DC2626"
                                 FontSize="14"

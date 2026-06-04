@@ -12,18 +12,18 @@
                 BorderBrush="#E5E7EB" BorderThickness="1">
             <Grid ColumnDefinitions="*,200,Auto" ColumnSpacing="12">
                 <TextBox PlaceholderText="🔍  Search products..."
-                         Text="{Binding SearchText, Mode=TwoWay}"
+                         Text="{ReflectionBinding SearchText, Mode=TwoWay}"
                          FontSize="14" Padding="12,8" />
 
                 <ComboBox Grid.Column="1"
-                          ItemsSource="{Binding Categories}"
-                          SelectedValue="{Binding SelectedCategory}"
+                          ItemsSource="{ReflectionBinding Categories}"
+                          SelectedValue="{ReflectionBinding SelectedCategory}"
                           PlaceholderText="All categories"
                           FontSize="14" Padding="8" />
 
                 <Button Grid.Column="2"
                         Content="+  Create Product"
-                        Command="{Binding CreateNewCommand}"
+                        Command="{ReflectionBinding CreateNewCommand}"
                         Background="{DynamicResource AccentPurple}"
                         Foreground="White"
                         FontSize="14"
@@ -36,7 +36,7 @@
         <!-- ===== Loading indicator ===== -->
         <ProgressBar Grid.Row="0"
                      IsIndeterminate="True"
-                     IsVisible="{Binding IsLoading}"
+                     IsVisible="{ReflectionBinding IsLoading}"
                      VerticalAlignment="Bottom"
                      Height="3"
                      Foreground="{DynamicResource AccentPurple}" />
@@ -44,7 +44,7 @@
         <!-- ===== Content area ===== -->
         <Grid Grid.Row="1">
             <!-- Loading skeleton (visible only during loading) -->
-            <StackPanel IsVisible="{Binding IsLoading}" Spacing="8" Margin="0">
+            <StackPanel IsVisible="{ReflectionBinding IsLoading}" Spacing="8" Margin="0">
                 <Border Background="#E5E7EB" Height="48" CornerRadius="8" />
                 <Border Background="#E5E7EB" Height="48" CornerRadius="8" />
                 <Border Background="#E5E7EB" Height="48" CornerRadius="8" />
@@ -53,28 +53,28 @@
             </StackPanel>
 
             <!-- Error state (visible only when error, not loading) -->
-            <Border IsVisible="{Binding HasError}"
+            <Border IsVisible="{ReflectionBinding HasError}"
                     Background="#FEF2F2"
                     CornerRadius="12" Padding="24"
                     BorderBrush="#FCA5A5" BorderThickness="1"
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center">
                 <StackPanel Spacing="12" HorizontalAlignment="Center">
-                    <TextBlock Text="{Binding ErrorMessage}"
+                    <TextBlock Text="{ReflectionBinding ErrorMessage}"
                                Foreground="#DC2626"
                                FontSize="14"
                                TextWrapping="Wrap"
                                MaxWidth="400"
                                HorizontalAlignment="Center" />
                     <Button Content="Retry"
-                            Command="{Binding RefreshCommand}"
+                            Command="{ReflectionBinding RefreshCommand}"
                             HorizontalAlignment="Center"
                             Padding="24,8" />
                 </StackPanel>
             </Border>
 
             <!-- Empty state (visible when not loading, not error, no products) -->
-            <StackPanel IsVisible="{Binding IsEmpty}"
+            <StackPanel IsVisible="{ReflectionBinding IsEmpty}"
                         HorizontalAlignment="Center"
                         VerticalAlignment="Center"
                         Spacing="12">
@@ -90,7 +90,7 @@
             </StackPanel>
 
             <!-- Product DataGrid (always visible, shows data when loaded) -->
-            <DataGrid ItemsSource="{Binding Products}"
+            <DataGrid ItemsSource="{ReflectionBinding Products}"
                       AutoGenerateColumns="False"
                       IsReadOnly="True"
                       GridLinesVisibility="Horizontal"
@@ -103,11 +103,11 @@
                       DoubleTapped="OnRowDoubleTapped">
 
                 <DataGrid.Columns>
-                    <DataGridTextColumn Header="Name" Binding="{Binding Name}" Width="*" />
-                    <DataGridTextColumn Header="Category" Binding="{Binding Category}" Width="120" />
-                    <DataGridTextColumn Header="Price" Binding="{Binding Price, StringFormat='{}{0:N0} đ'}" Width="130" />
-                    <DataGridTextColumn Header="Stock" Binding="{Binding Stock}" Width="80" />
-                    <DataGridTextColumn Header="Barcode" Binding="{Binding Barcode}" Width="130" />
+                    <DataGridTextColumn Header="Name" Binding="{ReflectionBinding Name}" Width="*" />
+                    <DataGridTextColumn Header="Category" Binding="{ReflectionBinding Category}" Width="120" />
+                    <DataGridTextColumn Header="Price" Binding="{ReflectionBinding Price, StringFormat='{}{0:N0} đ'}" Width="130" />
+                    <DataGridTextColumn Header="Stock" Binding="{ReflectionBinding Stock}" Width="80" />
+                    <DataGridTextColumn Header="Barcode" Binding="{ReflectionBinding Barcode}" Width="130" />
                     <DataGridTemplateColumn Header="Status" Width="80">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
@@ -140,7 +140,7 @@
         <Border Grid.Row="2" Padding="8,0">
             <Grid ColumnDefinitions="Auto,*,Auto">
                 <TextBlock Grid.Column="0"
-                           Text="{Binding TotalCount, StringFormat='Showing {0} products'}"
+                           Text="{ReflectionBinding TotalCount, StringFormat='Showing {0} products'}"
                            FontSize="13"
                            Foreground="Gray"
                            VerticalAlignment="Center" />
@@ -148,18 +148,18 @@
                 <StackPanel Grid.Column="1" Orientation="Horizontal"
                             HorizontalAlignment="Center" Spacing="4">
                     <Button Content="◀  Previous"
-                            IsEnabled="{Binding HasPrevious}"
-                            Command="{Binding GoToPageCommand}"
-                            CommandParameter="{Binding CurrentPage}"
+                            IsEnabled="{ReflectionBinding HasPrevious}"
+                            Command="{ReflectionBinding GoToPageCommand}"
+                            CommandParameter="{ReflectionBinding CurrentPage}"
                             FontSize="13"
                             Padding="12,6" />
-                    <TextBlock Text="{Binding CurrentPage, StringFormat='Page {0}'}"
+                    <TextBlock Text="{ReflectionBinding CurrentPage, StringFormat='Page {0}'}"
                                FontSize="13"
                                VerticalAlignment="Center"
                                Margin="8,0" />
                     <Button Content="Next  ▶"
-                            IsEnabled="{Binding HasNext}"                            Command="{Binding GoToPageCommand}"
-                            CommandParameter="{Binding CurrentPage}"
+                            IsEnabled="{ReflectionBinding HasNext}"                            Command="{ReflectionBinding GoToPageCommand}"
+                            CommandParameter="{ReflectionBinding CurrentPage}"
                             FontSize="13"
                             Padding="12,6" />
                 </StackPanel>

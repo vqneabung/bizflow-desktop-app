@@ -58,7 +58,7 @@
                 <!-- Navigation -->
                 <StackPanel Grid.Row="1" Spacing="2" Margin="12,0">
                     <Button Content="📦  Products"
-                            Command="{Binding GoToProductsCommand}"
+                            Command="{ReflectionBinding GoToProductsCommand}"
                             Background="Transparent"
                             Foreground="{DynamicResource SidebarText}"
                             HorizontalAlignment="Stretch"
@@ -79,17 +79,17 @@
                 <Border Grid.Row="2" Background="{DynamicResource SidebarHover}" Padding="16,12">
                     <Grid ColumnDefinitions="*,Auto">
                         <StackPanel>
-                            <TextBlock Text="{Binding UserName}"
+                            <TextBlock Text="{ReflectionBinding UserName}"
                                        FontSize="13"
                                        Foreground="White"
                                        FontWeight="SemiBold" />
-                            <TextBlock Text="{Binding UserEmail}"
+                            <TextBlock Text="{ReflectionBinding UserEmail}"
                                        FontSize="11"
                                        Foreground="{DynamicResource SidebarText}" />
                         </StackPanel>
                         <Button Grid.Column="1"
                                 Content="Logout"
-                                Command="{Binding LogoutCommand}"
+                                Command="{ReflectionBinding LogoutCommand}"
                                 Background="Transparent"
                                 Foreground="{DynamicResource SidebarText}"
                                 FontSize="12"
@@ -116,7 +116,7 @@
 
                 <!-- Content area (page switching) -->
                 <Border Grid.Row="1" Padding="24" CornerRadius="0">
-                    <ContentControl Content="{Binding CurrentPage}" />
+                    <ContentControl Content="{ReflectionBinding CurrentPage}" />
                 </Border>
             </Grid>
         </Border>

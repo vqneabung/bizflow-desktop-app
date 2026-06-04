@@ -53,12 +53,12 @@
                        Margin="0,0,0,8" />
 
             <!-- Error message banner -->
-            <Border IsVisible="{Binding HasError}"
+            <Border IsVisible="{ReflectionBinding HasError}"
                     Background="{DynamicResource ErrorBg}"
                     CornerRadius="8" Padding="12"
                     BorderBrush="{DynamicResource ErrorText}"
                     BorderThickness="1">
-                <TextBlock Text="{Binding ErrorMessage}"
+                <TextBlock Text="{ReflectionBinding ErrorMessage}"
                            Foreground="{DynamicResource ErrorText}"
                            TextWrapping="Wrap"
                            FontSize="13" />
@@ -66,18 +66,18 @@
 
             <!-- Email -->
             <TextBox PlaceholderText="Email address"
-                     Text="{Binding Email, Mode=TwoWay}"
+                     Text="{ReflectionBinding Email, Mode=TwoWay}"
                      TabIndex="1" />
 
             <!-- Password -->
             <TextBox PlaceholderText="Password"
                      PasswordChar="*"
-                     Text="{Binding Password, Mode=TwoWay}"
+                     Text="{ReflectionBinding Password, Mode=TwoWay}"
                      TabIndex="2" />
 
             <!-- Sign In button -->
             <Button Content="Sign In"
-                    Command="{Binding LoginCommand}"
+                    Command="{ReflectionBinding LoginCommand}"
                     HorizontalAlignment="Stretch"
                     Height="40"
                     CornerRadius="8"
@@ -100,7 +100,7 @@
 
             <!-- Loading indicator -->
             <ProgressBar IsIndeterminate="True"
-                         IsVisible="{Binding IsLoading}"
+                         IsVisible="{ReflectionBinding IsLoading}"
                          Height="4"
                          Foreground="{DynamicResource BtnPrimary}" />
 
