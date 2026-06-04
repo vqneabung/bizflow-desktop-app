@@ -11,7 +11,7 @@
 
     <Window.Resources>
         <ResourceDictionary>
-            <!-- Invert boolean converter cho IsEnabled/IsVisible binding -->
+            <!-- Theme colors for login form -->
             <ResourceDictionary.ThemeDictionaries>
                 <ResourceDictionary x:Key="Light">
                     <SolidColorBrush x:Key="InputBorder" Color="#D1D5DB" />
@@ -67,14 +67,12 @@
             <!-- Email -->
             <TextBox PlaceholderText="Email address"
                      Text="{Binding Email, Mode=TwoWay}"
-                     IsEnabled="{Binding IsLoading, Converter={x:Null}}"
                      TabIndex="1" />
 
             <!-- Password -->
             <TextBox PlaceholderText="Password"
                      PasswordChar="*"
                      Text="{Binding Password, Mode=TwoWay}"
-                     IsEnabled="{Binding IsLoading, Converter={x:Null}}"
                      TabIndex="2" />
 
             <!-- Sign In button -->
