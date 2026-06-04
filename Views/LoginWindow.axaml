@@ -1,0 +1,111 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:bizflow_desktop_app.ViewModels"
+        x:Class="bizflow_desktop_app.Views.LoginWindow"
+        x:DataType="vm:LoginViewModel"
+        Title="Bizflow - Sign In"
+        Width="400" Height="480"
+        WindowStartupLocation="CenterScreen"
+        CanResize="False"
+        Icon="/Assets/avalonia-logo.ico">
+
+    <Window.Resources>
+        <ResourceDictionary>
+            <!-- Invert boolean converter cho IsEnabled/IsVisible binding -->
+            <ResourceDictionary.ThemeDictionaries>
+                <ResourceDictionary x:Key="Light">
+                    <SolidColorBrush x:Key="InputBorder" Color="#D1D5DB" />
+                    <SolidColorBrush x:Key="ErrorBg" Color="#FEF2F2" />
+                    <SolidColorBrush x:Key="ErrorText" Color="#DC2626" />
+                    <SolidColorBrush x:Key="BtnPrimary" Color="#7C3AED" />
+                    <SolidColorBrush x:Key="BtnHover" Color="#6D28D9" />
+                </ResourceDictionary>
+                <ResourceDictionary x:Key="Dark">
+                    <SolidColorBrush x:Key="InputBorder" Color="#374151" />
+                    <SolidColorBrush x:Key="ErrorBg" Color="#450A0A" />
+                    <SolidColorBrush x:Key="ErrorText" Color="#FCA5A5" />
+                    <SolidColorBrush x:Key="BtnPrimary" Color="#7C3AED" />
+                    <SolidColorBrush x:Key="BtnHover" Color="#6D28D9" />
+                </ResourceDictionary>
+            </ResourceDictionary.ThemeDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
+
+    <Grid RowDefinitions="*">
+
+        <!-- Decorative overlay -->
+        <Rectangle Fill="{DynamicResource ErrorBg}" Opacity="0.03" />
+
+        <!-- Login form -->
+        <StackPanel VerticalAlignment="Center" Spacing="16" Margin="40">
+
+            <!-- Logo / Brand -->
+            <TextBlock Text="Bizflow"
+                       FontSize="32"
+                       FontWeight="Bold"
+                       HorizontalAlignment="Center"
+                       Foreground="{DynamicResource BtnPrimary}" />
+
+            <TextBlock Text="Sign in to your account"
+                       HorizontalAlignment="Center"
+                       Foreground="Gray"
+                       FontSize="14"
+                       Margin="0,0,0,8" />
+
+            <!-- Error message banner -->
+            <Border IsVisible="{Binding HasError}"
+                    Background="{DynamicResource ErrorBg}"
+                    CornerRadius="8" Padding="12"
+                    BorderBrush="{DynamicResource ErrorText}"
+                    BorderThickness="1">
+                <TextBlock Text="{Binding ErrorMessage}"
+                           Foreground="{DynamicResource ErrorText}"
+                           TextWrapping="Wrap"
+                           FontSize="13" />
+            </Border>
+
+            <!-- Email -->
+            <TextBox PlaceholderText="Email address"
+                     Text="{Binding Email, Mode=TwoWay}"
+                     IsEnabled="{Binding IsLoading, Converter={x:Null}}"
+                     TabIndex="1" />
+
+            <!-- Password -->
+            <TextBox PlaceholderText="Password"
+                     PasswordChar="*"
+                     Text="{Binding Password, Mode=TwoWay}"
+                     IsEnabled="{Binding IsLoading, Converter={x:Null}}"
+                     TabIndex="2" />
+
+            <!-- Sign In button -->
+            <Button Content="Sign In"
+                    Command="{Binding LoginCommand}"
+                    HorizontalAlignment="Stretch"
+                    Height="40"
+                    CornerRadius="8"
+                    FontSize="15"
+                    FontWeight="SemiBold"
+                    TabIndex="3">
+                <Button.Styles>
+                    <Style Selector="Button">
+                        <Setter Property="Background" Value="{DynamicResource BtnPrimary}" />
+                        <Setter Property="Foreground" Value="White" />
+                    </Style>
+                    <Style Selector="Button:pointerover">
+                        <Setter Property="Background" Value="{DynamicResource BtnHover}" />
+                    </Style>
+                    <Style Selector="Button:disabled">
+                        <Setter Property="Opacity" Value="0.5" />
+                    </Style>
+                </Button.Styles>
+            </Button>
+
+            <!-- Loading indicator -->
+            <ProgressBar IsIndeterminate="True"
+                         IsVisible="{Binding IsLoading}"
+                         Height="4"
+                         Foreground="{DynamicResource BtnPrimary}" />
+
+        </StackPanel>
+    </Grid>
+</Window>
