@@ -36,15 +36,16 @@ public class ProductService : IProductService
             var response = await _http.GetAsync($"/api/products{query}");
             response.EnsureSuccessStatusCode();
 
+            // Backend GET list trả PaginationResponse<T> (success/data/pagination ở root), không phải ApiResponse<PaginationResponse<...>>
             var result = await response.Content
-                .ReadFromJsonAsync<ApiResponse<PaginatedResponse<ProductResponse>>>(JsonOptions);
+                .ReadFromJsonAsync<PaginatedResponse<ProductResponse>>(JsonOptions);
 
-            return result?.Data ?? new PaginatedResponse<ProductResponse>([], new PaginationInfo(1, 20, 0, 0, false, false));
+            return result ?? new PaginatedResponse<ProductResponse>([], new PaginationInfo(1, 20, 0, 0));
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Failed to fetch products");
-            return new PaginatedResponse<ProductResponse>([], new PaginationInfo(1, 20, 0, 0, false, false));
+            return new PaginatedResponse<ProductResponse>([], new PaginationInfo(1, 20, 0, 0));
         }
     }
 
@@ -124,15 +125,15 @@ public class ProductService : IProductService
         var parts = new System.Collections.Generic.List<string>();
         if (!string.IsNullOrWhiteSpace(p.Search))
             parts.Add($"search={Uri.EscapeDataString(p.Search)}");
-        if (!string.IsNullOrWhiteSpace(p.Category))
-            parts.Add($"category={Uri.EscapeDataString(p.Category)}");
+        // Note: category filter disabled — backend now expects categoryId (UUID), not category (name)
+        // TODO: load categories from /api/reference/categories and map name→UUID
         if (!string.IsNullOrWhiteSpace(p.SortBy))
         {
             parts.Add($"sortBy={p.SortBy}");
             parts.Add($"sortDir={p.SortDir ?? "asc"}");
         }
         parts.Add($"page={p.Page}");
-        parts.Add($"pageSize={p.PageSize}");
+        parts.Add($"size={p.PageSize}");
 
         return "?" + string.Join("&", parts);
     }

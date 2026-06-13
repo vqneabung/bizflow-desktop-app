@@ -6,6 +6,7 @@ using Avalonia.Markup.Xaml;
 using bizflow_desktop_app.Services;
 using bizflow_desktop_app.ViewModels;
 using bizflow_desktop_app.Views;
+using Jeek.Avalonia.Localization;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -29,6 +30,10 @@ public partial class App : Application
             .SetBasePath(Directory.GetCurrentDirectory())
             .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
             .Build();
+
+        // === Initialize localization ===
+        Localizer.SetLocalizer(new JsonLocalizer("Locales"));
+        Localizer.Language = "vi";
 
         // === DI Container setup ===
         var services = new ServiceCollection();

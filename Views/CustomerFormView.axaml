@@ -1,0 +1,91 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+              xmlns:vm="using:bizflow_desktop_app.ViewModels"
+              xmlns:l="using:Jeek.Avalonia.Localization"
+             x:Class="bizflow_desktop_app.Views.CustomerFormView"
+             x:DataType="vm:CustomerFormViewModel">
+
+    <ScrollViewer>
+        <StackPanel Spacing="16" MaxWidth="600" HorizontalAlignment="Left">
+
+            <!-- Title -->
+            <TextBlock Text="{ReflectionBinding Title}"
+                       FontSize="20" FontWeight="Bold" />
+
+            <!-- Error banner -->
+            <Border IsVisible="{ReflectionBinding HasError}"
+                    Background="#FEF2F2" CornerRadius="12" Padding="16"
+                    BorderBrush="#FCA5A5" BorderThickness="1">
+                <TextBlock Text="{ReflectionBinding ErrorMessage}"
+                           Foreground="#DC2626" FontSize="14" />
+            </Border>
+
+            <!-- Form card -->
+            <Border Background="{DynamicResource CardBg}"
+                    CornerRadius="12" Padding="24"
+                    BorderBrush="#E5E7EB" BorderThickness="1">
+                <StackPanel Spacing="16">
+
+                    <!-- Name -->
+                    <StackPanel Spacing="4">
+                        <TextBlock Text="{l:Localize customer.form.name}" FontSize="13" FontWeight="SemiBold" />
+                        <TextBox Text="{ReflectionBinding Name, Mode=TwoWay}"
+                                 PlaceholderText="{l:Localize customer.form.namePlaceholder}"
+                                 MinHeight="36" FontSize="14" Padding="12,8" />
+                    </StackPanel>
+
+                    <!-- Phone -->
+                    <StackPanel Spacing="4">
+                        <TextBlock Text="{l:Localize customer.form.phone}" FontSize="13" FontWeight="SemiBold" />
+                        <TextBox Text="{ReflectionBinding Phone, Mode=TwoWay}"
+                                 PlaceholderText="{l:Localize customer.form.phonePlaceholder}"
+                                 MinHeight="36" FontSize="14" Padding="12,8" />
+                    </StackPanel>
+
+                    <!-- Email -->
+                    <StackPanel Spacing="4">
+                        <TextBlock Text="{l:Localize customer.form.email}" FontSize="13" FontWeight="SemiBold" />
+                        <TextBox Text="{ReflectionBinding Email, Mode=TwoWay}"
+                                 PlaceholderText="{l:Localize customer.form.emailPlaceholder}"
+                                 MinHeight="36" FontSize="14" Padding="12,8" />
+                    </StackPanel>
+
+                    <!-- Address -->
+                    <StackPanel Spacing="4">
+                        <TextBlock Text="{l:Localize customer.form.address}" FontSize="13" FontWeight="SemiBold" />
+                        <TextBox Text="{ReflectionBinding Address, Mode=TwoWay}"
+                                 PlaceholderText="{l:Localize customer.form.addressPlaceholder}"
+                                 MinHeight="36" FontSize="14" Padding="12,8" />
+                    </StackPanel>
+
+                    <!-- Notes -->
+                    <StackPanel Spacing="4">
+                        <TextBlock Text="{l:Localize customer.form.notes}" FontSize="13" FontWeight="SemiBold" />
+                        <TextBox Text="{ReflectionBinding Notes, Mode=TwoWay}"
+                                 PlaceholderText="{l:Localize customer.form.notesPlaceholder}"
+                                 MinHeight="80" FontSize="14" Padding="12,8"
+                                 AcceptsReturn="True"
+                                 TextWrapping="Wrap" />
+                    </StackPanel>
+
+                    <!-- Buttons -->
+                    <StackPanel Orientation="Horizontal" Spacing="12" Margin="0,8,0,0">
+                        <Button Content="{ReflectionBinding SubmitText}"
+                                Command="{ReflectionBinding SaveCommand}"
+                                Background="{DynamicResource AccentPurple}"
+                                Foreground="White" FontSize="14"
+                                FontWeight="SemiBold" Padding="24,10"
+                                CornerRadius="8"
+                                IsEnabled="{ReflectionBinding !IsSubmitting}" />
+                        <Button Content="{l:Localize customer.form.cancel}"
+                                Command="{ReflectionBinding CancelCommand}"
+                                Background="Transparent"
+                                Foreground="#6B7280" FontSize="14"
+                                Padding="20,10" CornerRadius="8"
+                                BorderBrush="#D1D5DB" BorderThickness="1" />
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

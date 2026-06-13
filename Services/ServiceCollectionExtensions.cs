@@ -54,12 +54,26 @@ public static class ServiceCollectionExtensions
         .AddPolicyHandler(GetRetryPolicy())
         .AddPolicyHandler(GetCircuitBreakerPolicy());
 
+        // === HttpClient for CustomerService ===
+        services.AddHttpClient<ICustomerService, CustomerService>((sp, client) =>
+        {
+            var settings = sp.GetRequiredService<IOptions<ApiSettings>>().Value;
+            client.BaseAddress = new Uri(settings.BaseUrl);
+            client.Timeout = TimeSpan.FromSeconds(settings.TimeoutSeconds);
+        })
+        .AddHttpMessageHandler<AuthMessageHandler>()
+        .AddPolicyHandler(GetRetryPolicy())
+        .AddPolicyHandler(GetCircuitBreakerPolicy());
+
         // === ViewModels ===
         services.AddTransient<LoginViewModel>();
         services.AddTransient<MainWindowViewModel>();
         services.AddTransient<ProductListViewModel>();
         services.AddTransient<ProductDetailViewModel>();
         services.AddTransient<ProductFormViewModel>();
+        services.AddTransient<CustomerListViewModel>();
+        services.AddTransient<CustomerDetailViewModel>();
+        services.AddTransient<CustomerFormViewModel>();
 
         return services;
     }

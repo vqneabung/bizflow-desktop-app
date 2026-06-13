@@ -5,6 +5,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using bizflow_desktop_app.Models;
 using bizflow_desktop_app.Services;
+using Jeek.Avalonia.Localization;
 
 namespace bizflow_desktop_app.ViewModels;
 
@@ -20,10 +21,10 @@ public partial class ProductFormViewModel : ViewModelBase
     private string _name = "";
 
     [ObservableProperty]
-    private string _category = "";
+    private string _categoryId = "";
 
     [ObservableProperty]
-    private string _primaryUnit = "";
+    private string _primaryUnitId = "";
 
     [ObservableProperty]
     private string _priceText = "";
@@ -56,10 +57,10 @@ public partial class ProductFormViewModel : ViewModelBase
     private bool _isEditMode;
 
     [ObservableProperty]
-    private string _title = "Create Product";
+    private string _title = Localizer.Get("product.form.createTitle");
 
     [ObservableProperty]
-    private string _submitText = "Save Product";
+    private string _submitText = Localizer.Get("product.form.save");
 
     public event Action? Saved;
     public event Action? Cancelled;
@@ -72,16 +73,16 @@ public partial class ProductFormViewModel : ViewModelBase
     public void LoadForCreate()
     {
         IsEditMode = false;
-        Title = "Create Product";
-        SubmitText = "Save Product";
+        Title = Localizer.Get("product.form.createTitle");
+        SubmitText = Localizer.Get("product.form.save");
         ClearForm();
     }
 
     public async void LoadForEdit(string id)
     {
         IsEditMode = true;
-        Title = "Edit Product";
-        SubmitText = "Save Changes";
+        Title = Localizer.Get("product.form.editTitle");
+        SubmitText = Localizer.Get("product.form.saveChanges");
         _editId = id;
 
         try
@@ -90,12 +91,12 @@ public partial class ProductFormViewModel : ViewModelBase
             if (product is not null)
             {
                 Name = product.Name;
-                Category = product.Category ?? "";
-                PrimaryUnit = product.PrimaryUnit ?? "";
+                CategoryId = product.CategoryId ?? "";
+                PrimaryUnitId = product.PrimaryUnitId;
                 PriceText = product.Price.ToString("0");
                 CostPriceText = product.CostPrice?.ToString("0") ?? "";
                 StockText = product.Stock.ToString();
-                MinStockText = product.MinStock?.ToString() ?? "";
+                MinStockText = product.MinStock.ToString();
                 Barcode = product.Barcode ?? "";
                 ImageUrl = product.ImageUrl ?? "";
             }
@@ -103,7 +104,7 @@ public partial class ProductFormViewModel : ViewModelBase
         catch
         {
             HasError = true;
-            ErrorMessage = "Failed to load product data.";
+            ErrorMessage = Localizer.Get("product.form.errorLoad");
         }
     }
 
@@ -120,14 +121,15 @@ public partial class ProductFormViewModel : ViewModelBase
                 var request = new UpdateProductRequest(
                     Id: _editId,
                     Name: string.IsNullOrWhiteSpace(Name) ? null : Name,
-                    Category: string.IsNullOrWhiteSpace(Category) ? null : Category,
-                    PrimaryUnit: string.IsNullOrWhiteSpace(PrimaryUnit) ? null : PrimaryUnit,
+                    CategoryId: string.IsNullOrWhiteSpace(CategoryId) ? null : CategoryId,
+                    PrimaryUnitId: string.IsNullOrWhiteSpace(PrimaryUnitId) ? null : PrimaryUnitId,
                     Price: decimal.TryParse(PriceText, out var p) ? p : null,
                     CostPrice: decimal.TryParse(CostPriceText, out var cp) ? cp : null,
-                    Stock: int.TryParse(StockText, out var s) ? s : null,
-                    MinStock: int.TryParse(MinStockText, out var ms) ? ms : null,
+                    Stock: decimal.TryParse(StockText, out var s) ? s : null,
+                    MinStock: decimal.TryParse(MinStockText, out var ms) ? ms : null,
                     Barcode: string.IsNullOrWhiteSpace(Barcode) ? null : Barcode,
-                    ImageUrl: string.IsNullOrWhiteSpace(ImageUrl) ? null : ImageUrl
+                    ImageUrl: string.IsNullOrWhiteSpace(ImageUrl) ? null : ImageUrl,
+                    ImageKeys: null
                 );
 
                 var result = await _productService.UpdateProductAsync(request);
@@ -136,21 +138,22 @@ public partial class ProductFormViewModel : ViewModelBase
                 else
                 {
                     HasError = true;
-                    ErrorMessage = "Failed to update product.";
+                    ErrorMessage = Localizer.Get("product.form.errorUpdate");
                 }
             }
             else
             {
                 var request = new CreateProductRequest(
                     Name: Name,
-                    Category: string.IsNullOrWhiteSpace(Category) ? null : Category,
-                    PrimaryUnit: string.IsNullOrWhiteSpace(PrimaryUnit) ? null : PrimaryUnit,
+                    CategoryId: string.IsNullOrWhiteSpace(CategoryId) ? null : CategoryId,
+                    PrimaryUnitId: PrimaryUnitId,
                     Price: decimal.Parse(PriceText),
                     CostPrice: decimal.TryParse(CostPriceText, out var cp) ? cp : null,
-                    Stock: int.Parse(StockText),
-                    MinStock: int.TryParse(MinStockText, out var ms) ? ms : null,
+                    Stock: decimal.Parse(StockText),
+                    MinStock: decimal.TryParse(MinStockText, out var ms) ? ms : null,
                     Barcode: string.IsNullOrWhiteSpace(Barcode) ? null : Barcode,
-                    ImageUrl: string.IsNullOrWhiteSpace(ImageUrl) ? null : ImageUrl
+                    ImageUrl: string.IsNullOrWhiteSpace(ImageUrl) ? null : ImageUrl,
+                    ImageKeys: null
                 );
 
                 var result = await _productService.CreateProductAsync(request);
@@ -159,14 +162,14 @@ public partial class ProductFormViewModel : ViewModelBase
                 else
                 {
                     HasError = true;
-                    ErrorMessage = "Failed to create product.";
+                    ErrorMessage = Localizer.Get("product.form.errorCreate");
                 }
             }
         }
         catch (Exception ex)
         {
             HasError = true;
-            ErrorMessage = $"Error: {ex.Message}";
+            ErrorMessage = $"{Localizer.Get("common.error")}: {ex.Message}";
         }
         finally
         {
@@ -185,15 +188,15 @@ public partial class ProductFormViewModel : ViewModelBase
         if (IsSubmitting) return false;
         if (string.IsNullOrWhiteSpace(Name)) return false;
         if (!decimal.TryParse(PriceText, out var price) || price < 0) return false;
-        if (!int.TryParse(StockText, out var stock) || stock < 0) return false;
+        if (!decimal.TryParse(StockText, out var stock) || stock < 0) return false;
         return true;
     }
 
     private void ClearForm()
     {
         Name = "";
-        Category = "";
-        PrimaryUnit = "";
+        CategoryId = "";
+        PrimaryUnitId = "";
         PriceText = "";
         CostPriceText = "";
         StockText = "";

@@ -1,9 +1,10 @@
 <Window xmlns="https://github.com/avaloniaui"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:vm="using:bizflow_desktop_app.ViewModels"
+         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+         xmlns:vm="using:bizflow_desktop_app.ViewModels"
+         xmlns:l="using:Jeek.Avalonia.Localization"
         x:Class="bizflow_desktop_app.Views.LoginWindow"
         x:DataType="vm:LoginViewModel"
-        Title="Bizflow - Sign In"
+        Title="{l:Localize login.title}"
         Width="520" Height="640"
         WindowStartupLocation="CenterScreen"
         CanResize="False"
@@ -46,7 +47,7 @@
                        HorizontalAlignment="Center"
                        Foreground="{DynamicResource BtnPrimary}" />
 
-            <TextBlock Text="Sign in to your account"
+            <TextBlock Text="{l:Localize login.subtitle}"
                        HorizontalAlignment="Center"
                        Foreground="Gray"
                        FontSize="14"
@@ -65,18 +66,18 @@
             </Border>
 
             <!-- Email -->
-            <TextBox PlaceholderText="Email address"
+            <TextBox PlaceholderText="{l:Localize login.email}"
                      Text="{ReflectionBinding Email, Mode=TwoWay}"
                      TabIndex="1" />
 
             <!-- Password -->
-            <TextBox PlaceholderText="Password"
+            <TextBox PlaceholderText="{l:Localize login.password}"
                      PasswordChar="*"
                      Text="{ReflectionBinding Password, Mode=TwoWay}"
                      TabIndex="2" />
 
             <!-- Sign In button -->
-            <Button Content="Sign In"
+            <Button Content="{l:Localize login.signIn}"
                     Command="{ReflectionBinding LoginCommand}"
                     HorizontalAlignment="Stretch"
                     Height="40"

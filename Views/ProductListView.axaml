@@ -1,6 +1,7 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:vm="using:bizflow_desktop_app.ViewModels"
+              xmlns:vm="using:bizflow_desktop_app.ViewModels"
+              xmlns:l="using:Jeek.Avalonia.Localization"
              x:Class="bizflow_desktop_app.Views.ProductListView"
              x:DataType="vm:ProductListViewModel">
 
@@ -11,18 +12,18 @@
                 Background="{DynamicResource CardBg}" CornerRadius="12"
                 BorderBrush="#E5E7EB" BorderThickness="1">
             <Grid ColumnDefinitions="*,200,Auto" ColumnSpacing="12">
-                <TextBox PlaceholderText="🔍  Search products..."
+                <TextBox PlaceholderText="{l:Localize product.list.search}"
                          Text="{ReflectionBinding SearchText, Mode=TwoWay}"
                          FontSize="14" Padding="12,8" />
 
                 <ComboBox Grid.Column="1"
                           ItemsSource="{ReflectionBinding Categories}"
                           SelectedValue="{ReflectionBinding SelectedCategory}"
-                          PlaceholderText="All categories"
+                          PlaceholderText="{l:Localize product.list.allCategories}"
                           FontSize="14" Padding="8" />
 
                 <Button Grid.Column="2"
-                        Content="+  Create Product"
+                        Content="{l:Localize product.list.create}"
                         Command="{ReflectionBinding CreateNewCommand}"
                         Background="{DynamicResource AccentPurple}"
                         Foreground="White"
@@ -79,11 +80,11 @@
                         VerticalAlignment="Center"
                         Spacing="12">
                 <TextBlock Text="📦" FontSize="48" HorizontalAlignment="Center" />
-                <TextBlock Text="No products found"
+                <TextBlock Text="{l:Localize product.list.empty}"
                            FontSize="18"
                            FontWeight="SemiBold"
                            HorizontalAlignment="Center" />
-                <TextBlock Text="Try adjusting your search or create a new product."
+                <TextBlock Text="{l:Localize product.list.emptyDesc}"
                            FontSize="13"
                            Foreground="Gray"
                            HorizontalAlignment="Center" />
@@ -103,15 +104,15 @@
                       DoubleTapped="OnRowDoubleTapped">
 
                 <DataGrid.Columns>
-                    <DataGridTextColumn Header="Name" Binding="{ReflectionBinding Name}" Width="*" />
-                    <DataGridTextColumn Header="Category" Binding="{ReflectionBinding Category}" Width="120" />
-                    <DataGridTextColumn Header="Price" Binding="{ReflectionBinding Price, StringFormat='{}{0:N0} đ'}" Width="130" />
-                    <DataGridTextColumn Header="Stock" Binding="{ReflectionBinding Stock}" Width="80" />
-                    <DataGridTextColumn Header="Barcode" Binding="{ReflectionBinding Barcode}" Width="130" />
-                    <DataGridTemplateColumn Header="Status" Width="80">
+                    <DataGridTextColumn Header="{l:Localize product.list.table.name}" Binding="{ReflectionBinding Name}" Width="*" />
+                    <DataGridTextColumn Header="{l:Localize product.list.table.category}" Binding="{ReflectionBinding CategoryName}" Width="120" />
+                    <DataGridTextColumn Header="{l:Localize product.list.table.price}" Binding="{ReflectionBinding Price, StringFormat='{}{0:N0} đ'}" Width="130" />
+                    <DataGridTextColumn Header="{l:Localize product.list.table.stock}" Binding="{ReflectionBinding Stock}" Width="80" />
+                    <DataGridTextColumn Header="{l:Localize product.list.table.barcode}" Binding="{ReflectionBinding Barcode}" Width="130" />
+                    <DataGridTemplateColumn Header="{l:Localize product.list.table.status}" Width="80">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
-                                <TextBlock Text="Active"
+                                <TextBlock Text="{l:Localize product.detail.active}"
                                            Foreground="#059669"
                                            FontSize="12"
                                            FontWeight="SemiBold"
@@ -119,7 +120,7 @@
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
-                    <DataGridTemplateColumn Header="Actions" Width="100">
+                    <DataGridTemplateColumn Header="{l:Localize product.list.table.actions}" Width="100">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <Button Content="View"
@@ -147,7 +148,7 @@
 
                 <StackPanel Grid.Column="1" Orientation="Horizontal"
                             HorizontalAlignment="Center" Spacing="4">
-                    <Button Content="◀  Previous"
+                    <Button Content="{l:Localize product.list.prev}"
                             IsEnabled="{ReflectionBinding HasPrevious}"
                             Command="{ReflectionBinding GoToPageCommand}"
                             CommandParameter="{ReflectionBinding CurrentPage}"
@@ -157,7 +158,7 @@
                                FontSize="13"
                                VerticalAlignment="Center"
                                Margin="8,0" />
-                    <Button Content="Next  ▶"
+                    <Button Content="{l:Localize product.list.next}"
                             IsEnabled="{ReflectionBinding HasNext}"                            Command="{ReflectionBinding GoToPageCommand}"
                             CommandParameter="{ReflectionBinding CurrentPage}"
                             FontSize="13"

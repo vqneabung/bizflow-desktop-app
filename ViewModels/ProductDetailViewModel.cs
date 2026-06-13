@@ -4,6 +4,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using bizflow_desktop_app.Models;
 using bizflow_desktop_app.Services;
+using Jeek.Avalonia.Localization;
 
 namespace bizflow_desktop_app.ViewModels;
 
@@ -31,13 +32,12 @@ public partial class ProductDetailViewModel : ViewModelBase
 
     // Computed display properties
     public string PriceDisplay => Product is null ? "" : $"{Product.Price:N0} đ";
-    public string CostPriceDisplay => Product?.CostPrice is null ? "—" : $"{Product.CostPrice:N0} đ";
-    public string StockDisplay => Product is null ? "" : Product.MinStock.HasValue
-        ? $"{Product.Stock} (min: {Product.MinStock})"
-        : $"{Product.Stock}";
-    public string StatusText => Product?.IsActive == true ? "Active" : "Inactive";
+    public string CostPriceDisplay => Product?.CostPrice is null ? Localizer.Get("common.notAvailable") : $"{Product.CostPrice:N0} đ";
+    public string StockDisplay => Product is null ? ""
+        : $"{Product.Stock:N0} (min: {Product.MinStock:N0})";
+    public string StatusText => Product?.IsActive == true ? Localizer.Get("product.detail.active") : Localizer.Get("product.detail.inactive");
     public string CreatedDate => Product?.CreatedAt.ToString("dd/MM/yyyy HH:mm") ?? "";
-    public string UpdatedDate => Product?.UpdatedAt.ToString("dd/MM/yyyy HH:mm") ?? "";
+    public string UpdatedDate => Product?.UpdatedAt?.ToString("dd/MM/yyyy HH:mm") ?? "";
 
     public ProductDetailViewModel(IProductService productService)
     {
@@ -56,13 +56,13 @@ public partial class ProductDetailViewModel : ViewModelBase
             if (Product is null)
             {
                 HasError = true;
-                ErrorMessage = "Product not found.";
+                ErrorMessage = Localizer.Get("product.detail.notFound");
             }
         }
         catch (Exception ex)
         {
             HasError = true;
-            ErrorMessage = $"Error: {ex.Message}";
+            ErrorMessage = $"{Localizer.Get("common.error")}: {ex.Message}";
         }
         finally
         {

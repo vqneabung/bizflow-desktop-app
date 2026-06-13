@@ -1,0 +1,120 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+              xmlns:vm="using:bizflow_desktop_app.ViewModels"
+              xmlns:l="using:Jeek.Avalonia.Localization"
+             x:Class="bizflow_desktop_app.Views.CustomerDetailView"
+             x:DataType="vm:CustomerDetailViewModel">
+
+    <ScrollViewer>
+        <StackPanel Spacing="16">
+            <!-- Back button -->
+            <Button Content="{l:Localize customer.detail.back}"
+                    Command="{ReflectionBinding GoBackCommand}"
+                    Background="Transparent"
+                    Foreground="{DynamicResource AccentPurple}"
+                    FontSize="14" Padding="0"
+                    HorizontalAlignment="Left" />
+
+            <!-- Loading -->
+            <ProgressBar IsIndeterminate="True"
+                         IsVisible="{ReflectionBinding IsLoading}"
+                         Height="3" Foreground="{DynamicResource AccentPurple}" />
+
+            <!-- Error -->
+            <Border IsVisible="{ReflectionBinding HasError}"
+                    Background="#FEF2F2" CornerRadius="12" Padding="24">
+                <TextBlock Text="{ReflectionBinding ErrorMessage}"
+                           Foreground="#DC2626" FontSize="14" />
+            </Border>
+
+            <!-- Detail card -->
+            <Border Background="{DynamicResource CardBg}"
+                    CornerRadius="12" Padding="24"
+                    BorderBrush="#E5E7EB" BorderThickness="1">
+
+                <Grid ColumnDefinitions="1.5*,2*"
+                      RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto"
+                      RowSpacing="16" ColumnSpacing="32">
+
+                    <!-- Name -->
+                    <TextBlock Grid.Row="0" Grid.ColumnSpan="2"
+                               Text="{ReflectionBinding Customer.Name}"
+                               FontSize="24" FontWeight="Bold" />
+
+                    <!-- Phone -->
+                    <StackPanel Grid.Row="1" Grid.Column="0" Spacing="4">
+                        <TextBlock Text="{l:Localize customer.detail.phone}" FontSize="12" Foreground="Gray" />
+                        <TextBlock Text="{ReflectionBinding Customer.Phone}" FontSize="15" />
+                    </StackPanel>
+
+                    <!-- Email -->
+                    <StackPanel Grid.Row="1" Grid.Column="1" Spacing="4">
+                        <TextBlock Text="{l:Localize customer.detail.email}" FontSize="12" Foreground="Gray" />
+                        <TextBlock Text="{ReflectionBinding Customer.Email}" FontSize="15" />
+                    </StackPanel>
+
+                    <!-- Address -->
+                    <StackPanel Grid.Row="2" Grid.ColumnSpan="2" Spacing="4">
+                        <TextBlock Text="{l:Localize customer.detail.address}" FontSize="12" Foreground="Gray" />
+                        <TextBlock Text="{ReflectionBinding Customer.Address}" FontSize="15"
+                                   TextWrapping="Wrap" />
+                    </StackPanel>
+
+                    <!-- Notes -->
+                    <StackPanel Grid.Row="3" Grid.ColumnSpan="2" Spacing="4">
+                        <TextBlock Text="{l:Localize customer.detail.notes}" FontSize="12" Foreground="Gray" />
+                        <TextBlock Text="{ReflectionBinding Customer.Notes}" FontSize="15"
+                                   TextWrapping="Wrap" />
+                    </StackPanel>
+
+                    <!-- Debt -->
+                    <StackPanel Grid.Row="4" Grid.Column="0" Spacing="4">
+                        <TextBlock Text="{l:Localize customer.detail.debt}" FontSize="12" Foreground="Gray" />
+                        <TextBlock Text="{Binding DebtDisplay}" FontSize="20" FontWeight="Bold"
+                                   Foreground="#DC2626" />
+                    </StackPanel>
+
+                    <!-- Status -->
+                    <StackPanel Grid.Row="4" Grid.Column="1" Spacing="4">
+                        <TextBlock Text="{l:Localize customer.detail.status}" FontSize="12" Foreground="Gray" />
+                        <TextBlock Text="{Binding StatusText}" FontSize="15"
+                                   FontWeight="SemiBold"
+                                   Foreground="{DynamicResource AccentPurple}" />
+                    </StackPanel>
+
+                    <!-- Divider -->
+                    <Border Grid.Row="5" Grid.ColumnSpan="2"
+                            Height="1" Background="#E5E7EB" />
+
+                    <!-- Dates -->
+                    <StackPanel Grid.Row="6" Grid.ColumnSpan="2" Spacing="4">
+                        <TextBlock Text="{l:Localize customer.detail.dateInfo}" FontSize="12" Foreground="Gray" />
+                        <TextBlock Text="{Binding CreatedDate, StringFormat='Created: {0}'}" FontSize="13" />
+                        <TextBlock Text="{Binding UpdatedDate, StringFormat='Updated: {0}'}" FontSize="13" />
+                    </StackPanel>
+
+                    <!-- Divider -->
+                    <Border Grid.Row="7" Grid.ColumnSpan="2"
+                            Height="1" Background="#E5E7EB" />
+
+                    <!-- Actions -->
+                    <StackPanel Grid.Row="8" Grid.ColumnSpan="2"
+                                Orientation="Horizontal" Spacing="12">
+                        <Button Content="{l:Localize customer.detail.edit}"
+                                Command="{ReflectionBinding EditCommand}"
+                                Background="{DynamicResource AccentPurple}"
+                                Foreground="White" FontSize="14"
+                                FontWeight="SemiBold" Padding="20,10"
+                                CornerRadius="8" />
+                        <Button Content="{l:Localize customer.detail.deactivate}"
+                                Command="{ReflectionBinding DeactivateCommand}"
+                                Background="#FEF2F2" Foreground="#DC2626"
+                                FontSize="14" Padding="20,10"
+                                CornerRadius="8"
+                                BorderBrush="#FCA5A5" BorderThickness="1" />
+                    </StackPanel>
+                </Grid>
+            </Border>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

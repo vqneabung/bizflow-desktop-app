@@ -1,6 +1,7 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:vm="using:bizflow_desktop_app.ViewModels"
+              xmlns:vm="using:bizflow_desktop_app.ViewModels"
+              xmlns:l="using:Jeek.Avalonia.Localization"
              x:Class="bizflow_desktop_app.Views.ProductFormView"
              x:DataType="vm:ProductFormViewModel">
 
@@ -42,49 +43,49 @@
 
                     <!-- Row 0: Name (full width) -->
                     <TextBox Grid.Row="0" Grid.ColumnSpan="2"
-                             PlaceholderText="Product name *"
+                             PlaceholderText="{l:Localize product.form.name}"
                              Text="{ReflectionBinding Name, Mode=TwoWay}"
                              FontSize="14" Padding="12,10" />
 
                     <!-- Row 1: Category + Primary Unit -->
                     <TextBox Grid.Row="1" Grid.Column="0"
-                             PlaceholderText="Category"
+                             PlaceholderText="{l:Localize product.form.category}"
                              Text="{ReflectionBinding Category, Mode=TwoWay}"
                              FontSize="14" Padding="12,10" />
                     <TextBox Grid.Row="1" Grid.Column="1"
-                             PlaceholderText="Primary unit"
+                             PlaceholderText="{l:Localize product.form.primaryUnit}"
                              Text="{ReflectionBinding PrimaryUnit, Mode=TwoWay}"
                              FontSize="14" Padding="12,10" />
 
                     <!-- Row 2: Price + Cost Price -->
                     <TextBox Grid.Row="2" Grid.Column="0"
-                             PlaceholderText="Price *"
+                             PlaceholderText="{l:Localize product.form.price}"
                              Text="{ReflectionBinding PriceText, Mode=TwoWay}"
                              FontSize="14" Padding="12,10" />
                     <TextBox Grid.Row="2" Grid.Column="1"
-                             PlaceholderText="Cost price"
+                             PlaceholderText="{l:Localize product.form.costPrice}"
                              Text="{ReflectionBinding CostPriceText, Mode=TwoWay}"
                              FontSize="14" Padding="12,10" />
 
                     <!-- Row 3: Stock + Min Stock -->
                     <TextBox Grid.Row="3" Grid.Column="0"
-                             PlaceholderText="Stock *"
+                             PlaceholderText="{l:Localize product.form.stock}"
                              Text="{ReflectionBinding StockText, Mode=TwoWay}"
                              FontSize="14" Padding="12,10" />
                     <TextBox Grid.Row="3" Grid.Column="1"
-                             PlaceholderText="Min stock"
+                             PlaceholderText="{l:Localize product.form.minStock}"
                              Text="{ReflectionBinding MinStockText, Mode=TwoWay}"
                              FontSize="14" Padding="12,10" />
 
                     <!-- Row 4: Barcode (full width) -->
                     <TextBox Grid.Row="4" Grid.ColumnSpan="2"
-                             PlaceholderText="Barcode"
+                             PlaceholderText="{l:Localize product.form.barcode}"
                              Text="{ReflectionBinding Barcode, Mode=TwoWay}"
                              FontSize="14" Padding="12,10" />
 
                     <!-- Row 5: Image URL (full width) -->
                     <TextBox Grid.Row="5" Grid.ColumnSpan="2"
-                             PlaceholderText="Image URL"
+                             PlaceholderText="{l:Localize product.form.imageUrl}"
                              Text="{ReflectionBinding ImageUrl, Mode=TwoWay}"
                              FontSize="14" Padding="12,10" />
 
@@ -103,7 +104,7 @@
                                 FontWeight="SemiBold"
                                 Padding="24,10"
                                 CornerRadius="8" />
-                        <Button Content="Cancel"
+                        <Button Content="{l:Localize product.form.cancel}"
                                 Command="{ReflectionBinding CancelCommand}"
                                 Background="Transparent"
                                 Foreground="Gray"

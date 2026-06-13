@@ -1,0 +1,128 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+              xmlns:vm="using:bizflow_desktop_app.ViewModels"
+              xmlns:l="using:Jeek.Avalonia.Localization"
+             x:Class="bizflow_desktop_app.Views.CustomerListView"
+             x:DataType="vm:CustomerListViewModel">
+
+    <Grid RowDefinitions="Auto,*,Auto" RowSpacing="16">
+
+        <!-- ===== Filter bar ===== -->
+        <Border Grid.Row="0" Padding="16"
+                Background="{DynamicResource CardBg}" CornerRadius="12"
+                BorderBrush="#E5E7EB" BorderThickness="1">
+            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
+                <TextBox PlaceholderText="{l:Localize customer.list.search}"
+                         Text="{ReflectionBinding SearchText, Mode=TwoWay}"
+                         FontSize="14" Padding="12,8" />
+
+                <Button Grid.Column="1"
+                        Content="{l:Localize customer.list.create}"
+                        Command="{ReflectionBinding CreateNewCommand}"
+                        Background="{DynamicResource AccentPurple}"
+                        Foreground="White"
+                        FontSize="14"
+                        FontWeight="SemiBold"
+                        Padding="20,10"
+                        CornerRadius="8" />
+            </Grid>
+        </Border>
+
+        <!-- Loading -->
+        <ProgressBar Grid.Row="0"
+                     IsIndeterminate="True"
+                     IsVisible="{ReflectionBinding IsLoading}"
+                     VerticalAlignment="Bottom" Height="3"
+                     Foreground="{DynamicResource AccentPurple}" />
+
+        <!-- ===== Content ===== -->
+        <Grid Grid.Row="1">
+            <!-- Loading skeleton -->
+            <StackPanel IsVisible="{ReflectionBinding IsLoading}" Spacing="8" Margin="0">
+                <Border Background="#E5E7EB" Height="48" CornerRadius="8" />
+                <Border Background="#E5E7EB" Height="48" CornerRadius="8" />
+                <Border Background="#E5E7EB" Height="48" CornerRadius="8" />
+                <Border Background="#E5E7EB" Height="48" CornerRadius="8" />
+                <Border Background="#E5E7EB" Height="48" CornerRadius="8" />
+            </StackPanel>
+
+            <!-- Error -->
+            <Border IsVisible="{ReflectionBinding HasError}"
+                    Background="#FEF2F2" CornerRadius="12" Padding="24"
+                    BorderBrush="#FCA5A5" BorderThickness="1"
+                    HorizontalAlignment="Center" VerticalAlignment="Center">
+                <StackPanel Spacing="12" HorizontalAlignment="Center">
+                    <TextBlock Text="{ReflectionBinding ErrorMessage}"
+                               Foreground="#DC2626" FontSize="14"
+                               TextWrapping="Wrap" MaxWidth="400"
+                               HorizontalAlignment="Center" />
+                    <Button Content="Retry" Command="{ReflectionBinding RefreshCommand}"
+                            HorizontalAlignment="Center" Padding="24,8" />
+                </StackPanel>
+            </Border>
+
+            <!-- Empty -->
+            <StackPanel IsVisible="{ReflectionBinding IsEmpty}"
+                        HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="12">
+                <TextBlock Text="👥" FontSize="48" HorizontalAlignment="Center" />
+                <TextBlock Text="{l:Localize customer.list.empty}" FontSize="18" FontWeight="SemiBold"
+                           HorizontalAlignment="Center" />
+                <TextBlock Text="{l:Localize customer.list.emptyDesc}"
+                           FontSize="13" Foreground="Gray" HorizontalAlignment="Center" />
+            </StackPanel>
+
+            <!-- DataGrid -->
+            <DataGrid ItemsSource="{ReflectionBinding Customers}"
+                      AutoGenerateColumns="False" IsReadOnly="True"
+                      GridLinesVisibility="Horizontal" BorderThickness="0"
+                      Background="{DynamicResource CardBg}" CornerRadius="12"
+                      RowHeight="48" FontSize="13"
+                      SelectionMode="Single"
+                      DoubleTapped="OnRowDoubleTapped">
+
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="{l:Localize customer.list.table.name}" Binding="{ReflectionBinding Name}" Width="*" />
+                    <DataGridTextColumn Header="{l:Localize customer.list.table.phone}" Binding="{ReflectionBinding Phone}" Width="130" />
+                    <DataGridTextColumn Header="{l:Localize customer.list.table.email}" Binding="{ReflectionBinding Email}" Width="*" />
+                    <DataGridTextColumn Header="{l:Localize customer.list.table.debt}" Binding="{ReflectionBinding TotalDebt, StringFormat='{}{0:N0} đ'}" Width="130" />
+                    <DataGridTemplateColumn Header="{l:Localize customer.list.table.actions}" Width="100">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <Button Content="View"
+                                        Click="OnViewButtonClick"
+                                        Background="{DynamicResource AccentPurple}"
+                                        Foreground="White" FontSize="12"
+                                        Padding="12,4" CornerRadius="6" />
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                </DataGrid.Columns>
+            </DataGrid>
+        </Grid>
+
+        <!-- ===== Pagination ===== -->
+        <Border Grid.Row="2" Padding="8,0">
+            <Grid ColumnDefinitions="Auto,*,Auto">
+                <TextBlock Grid.Column="0"
+                           Text="{ReflectionBinding TotalCount, StringFormat='Showing {0} customers'}"
+                           FontSize="13" Foreground="Gray" VerticalAlignment="Center" />
+
+                <StackPanel Grid.Column="1" Orientation="Horizontal"
+                            HorizontalAlignment="Center" Spacing="4">
+                    <Button Content="{l:Localize customer.list.prev}"
+                            IsEnabled="{ReflectionBinding HasPrevious}"
+                            Command="{ReflectionBinding GoToPageCommand}"
+                            CommandParameter="{ReflectionBinding CurrentPage}"
+                            FontSize="13" Padding="12,6" />
+                    <TextBlock Text="{ReflectionBinding CurrentPage, StringFormat='Page {0}'}"
+                               FontSize="13" VerticalAlignment="Center" Margin="8,0" />
+                    <Button Content="{l:Localize customer.list.next}"
+                            IsEnabled="{ReflectionBinding HasNext}"
+                            Command="{ReflectionBinding GoToPageCommand}"
+                            CommandParameter="{ReflectionBinding CurrentPage}"
+                            FontSize="13" Padding="12,6" />
+                </StackPanel>
+            </Grid>
+        </Border>
+    </Grid>
+</UserControl>

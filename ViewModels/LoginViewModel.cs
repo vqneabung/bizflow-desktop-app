@@ -6,6 +6,7 @@ using CommunityToolkit.Mvvm.Input;
 using bizflow_desktop_app.Models;
 using bizflow_desktop_app.Services;
 using Microsoft.Extensions.Logging;
+using Jeek.Avalonia.Localization;
 
 namespace bizflow_desktop_app.ViewModels;
 
@@ -77,13 +78,13 @@ public partial class LoginViewModel : ViewModelBase
         }
         catch (HttpRequestException)
         {
-            ErrorMessage = "Cannot connect to server. Please check your connection.";
+            ErrorMessage = Localizer.Get("login.errorConnection");
             HasError = true;
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Unexpected error during login for {Email}", Email);
-            ErrorMessage = $"Unexpected error: {ex.Message}";
+            ErrorMessage = $"{Localizer.Get("common.error")}: {ex.Message}";
             HasError = true;
         }
         finally

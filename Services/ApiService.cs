@@ -69,6 +69,20 @@ public class ApiService : IApiService
         }
     }
 
+    public async Task LogoutAsync()
+    {
+        try
+        {
+            await _http.PostAsync("/api/auth/logout", null);
+            _logger.LogInformation("Logout request sent to BFF");
+        }
+        catch (Exception ex)
+        {
+            // Best-effort: local session is cleared regardless of BFF response
+            _logger.LogWarning(ex, "Logout BFF call failed, clearing local session anyway");
+        }
+    }
+
     /// <summary>
     /// Attempt to deserialize error body from non-success HTTP response.
     /// Falls back to status code text if parsing fails.

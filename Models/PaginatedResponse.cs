@@ -3,13 +3,15 @@ using System.Text.Json.Serialization;
 
 namespace bizflow_desktop_app.Models;
 
+/// <summary>
+/// Pagination metadata matching backend PaginationMeta.
+/// page = 1-based, size = page size, totalElements = total rows, totalPages = computed.
+/// </summary>
 public record PaginationInfo(
     [property: JsonPropertyName("page")] int Page,
-    [property: JsonPropertyName("pageSize")] int PageSize,
-    [property: JsonPropertyName("totalCount")] int TotalCount,
-    [property: JsonPropertyName("totalPages")] int TotalPages,
-    [property: JsonPropertyName("hasPrevious")] bool HasPrevious,
-    [property: JsonPropertyName("hasNext")] bool HasNext
+    [property: JsonPropertyName("size")] int Size,
+    [property: JsonPropertyName("totalElements")] long TotalElements,
+    [property: JsonPropertyName("totalPages")] int TotalPages
 );
 
 public record PaginatedResponse<T>(

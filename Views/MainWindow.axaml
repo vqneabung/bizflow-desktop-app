@@ -1,7 +1,8 @@
 <Window xmlns="https://github.com/avaloniaui"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:vm="using:bizflow_desktop_app.ViewModels"
-        xmlns:local="using:bizflow_desktop_app.Views"
+         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+         xmlns:vm="using:bizflow_desktop_app.ViewModels"
+         xmlns:local="using:bizflow_desktop_app.Views"
+         xmlns:l="using:Jeek.Avalonia.Localization"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d" d:DesignWidth="1366" d:DesignHeight="900"
@@ -50,15 +51,31 @@
                                FontSize="22"
                                FontWeight="Bold"
                                Foreground="White" />
-                    <TextBlock Text="Admin Console"
+                    <TextBlock Text="{l:Localize nav.adminConsole}"
                                FontSize="12"
                                Foreground="{DynamicResource SidebarText}" />
                 </StackPanel>
 
                 <!-- Navigation -->
                 <StackPanel Grid.Row="1" Spacing="2" Margin="12,0">
-                    <Button Content="📦  Products"
+                    <Button Content="{l:Localize nav.products}"
                             Command="{ReflectionBinding GoToProductsCommand}"
+                            Background="Transparent"
+                            Foreground="{DynamicResource SidebarText}"
+                            HorizontalAlignment="Stretch"
+                            HorizontalContentAlignment="Left"
+                            Padding="16,10"
+                            CornerRadius="8"
+                            FontSize="14">
+                        <Button.Styles>
+                            <Style Selector="Button:pointerover">
+                                <Setter Property="Background" Value="{DynamicResource SidebarHover}" />
+                                <Setter Property="Foreground" Value="White" />
+                            </Style>
+                        </Button.Styles>
+                    </Button>
+                    <Button Content="{l:Localize nav.customers}"
+                            Command="{ReflectionBinding GoToCustomersCommand}"
                             Background="Transparent"
                             Foreground="{DynamicResource SidebarText}"
                             HorizontalAlignment="Stretch"
@@ -75,25 +92,49 @@
                     </Button>
                 </StackPanel>
 
-                <!-- User info -->
+                <!-- Language + User info -->
                 <Border Grid.Row="2" Background="{DynamicResource SidebarHover}" Padding="16,12">
-                    <Grid ColumnDefinitions="*,Auto">
-                        <StackPanel>
-                            <TextBlock Text="{ReflectionBinding UserName}"
-                                       FontSize="13"
-                                       Foreground="White"
-                                       FontWeight="SemiBold" />
-                            <TextBlock Text="{ReflectionBinding UserEmail}"
-                                       FontSize="11"
-                                       Foreground="{DynamicResource SidebarText}" />
-                        </StackPanel>
-                        <Button Grid.Column="1"
-                                Content="Logout"
-                                Command="{ReflectionBinding LogoutCommand}"
-                                Background="Transparent"
-                                Foreground="{DynamicResource SidebarText}"
-                                FontSize="12"
-                                Padding="8,4" />
+                    <Grid RowDefinitions="Auto,Auto" RowSpacing="8">
+                        <!-- Language switcher -->
+                        <Border Grid.Row="0"
+                                Background="{DynamicResource SidebarBg}"
+                                CornerRadius="6"
+                                Padding="12,6">
+                            <Grid ColumnDefinitions="*,Auto">
+                                <TextBlock Text="{ReflectionBinding CurrentLanguageDisplay}"
+                                           FontSize="12"
+                                           Foreground="{DynamicResource SidebarText}"
+                                           VerticalAlignment="Center" />
+                                <Button Grid.Column="1"
+                                        Content="{l:Localize nav.languageToggle}"
+                                        Command="{ReflectionBinding ToggleLanguageCommand}"
+                                        Background="Transparent"
+                                        Foreground="{DynamicResource AccentPurple}"
+                                        FontSize="11"
+                                        Padding="6,2"
+                                        CornerRadius="4" />
+                            </Grid>
+                        </Border>
+
+                        <!-- User info -->
+                        <Grid Grid.Row="1" ColumnDefinitions="*,Auto">
+                            <StackPanel>
+                                <TextBlock Text="{ReflectionBinding UserName}"
+                                           FontSize="13"
+                                           Foreground="White"
+                                           FontWeight="SemiBold" />
+                                <TextBlock Text="{ReflectionBinding UserEmail}"
+                                           FontSize="11"
+                                           Foreground="{DynamicResource SidebarText}" />
+                            </StackPanel>
+                            <Button Grid.Column="1"
+                                    Content="{l:Localize nav.logout}"
+                                    Command="{ReflectionBinding LogoutCommand}"
+                                    Background="Transparent"
+                                    Foreground="{DynamicResource SidebarText}"
+                                    FontSize="12"
+                                    Padding="8,4" />
+                        </Grid>
                     </Grid>
                 </Border>
             </Grid>
@@ -108,7 +149,7 @@
                         Padding="24,16"
                         BorderBrush="#E5E7EB"
                         BorderThickness="0,0,0,1">
-                    <TextBlock Text="Dashboard"
+                    <TextBlock Text="{l:Localize nav.dashboard}"
                                FontSize="18"
                                FontWeight="SemiBold"
                                Foreground="{DynamicResource AccentPurple}" />
@@ -132,6 +173,15 @@
         </DataTemplate>
         <DataTemplate DataType="vm:ProductFormViewModel">
             <local:ProductFormView />
+        </DataTemplate>
+        <DataTemplate DataType="vm:CustomerListViewModel">
+            <local:CustomerListView />
+        </DataTemplate>
+        <DataTemplate DataType="vm:CustomerDetailViewModel">
+            <local:CustomerDetailView />
+        </DataTemplate>
+        <DataTemplate DataType="vm:CustomerFormViewModel">
+            <local:CustomerFormView />
         </DataTemplate>
     </Window.DataTemplates>
 

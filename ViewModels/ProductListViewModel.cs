@@ -6,6 +6,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using bizflow_desktop_app.Models;
 using bizflow_desktop_app.Services;
+using Jeek.Avalonia.Localization;
 
 namespace bizflow_desktop_app.ViewModels;
 
@@ -89,16 +90,16 @@ public partial class ProductListViewModel : ViewModelBase
             var result = await _productService.GetProductsAsync(searchParams);
 
             Products = new ObservableCollection<ProductResponse>(result.Data);
-            TotalCount = result.Pagination.TotalCount;
+            TotalCount = (int)result.Pagination.TotalElements;
             TotalPages = result.Pagination.TotalPages;
-            HasPrevious = result.Pagination.HasPrevious;
-            HasNext = result.Pagination.HasNext;
+            HasPrevious = CurrentPage > 1;
+            HasNext = CurrentPage < TotalPages;
             IsEmpty = Products.Count == 0;
 
-            // Extract unique categories for filter dropdown
+            // Extract unique categories for filter dropdown (client-side only)
             Categories = new ObservableCollection<string>(
-                Products.Where(p => !string.IsNullOrWhiteSpace(p.Category))
-                       .Select(p => p.Category!)
+                Products.Where(p => !string.IsNullOrWhiteSpace(p.CategoryName))
+                       .Select(p => p.CategoryName!)
                        .Distinct()
                        .OrderBy(c => c)
             );
@@ -106,7 +107,7 @@ public partial class ProductListViewModel : ViewModelBase
         catch (Exception ex)
         {
             HasError = true;
-            ErrorMessage = $"Failed to load products: {ex.Message}";
+            ErrorMessage = $"{Localizer.Get("product.list.errorLoad")}: {ex.Message}";
             Products = [];
             IsEmpty = true;
         }
