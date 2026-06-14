@@ -6,6 +6,7 @@ using CommunityToolkit.Mvvm.Input;
 using bizflow_desktop_app.Models;
 using bizflow_desktop_app.Services;
 using Jeek.Avalonia.Localization;
+using Microsoft.Extensions.Logging;
 
 namespace bizflow_desktop_app.ViewModels;
 
@@ -62,12 +63,17 @@ public partial class ProductFormViewModel : ViewModelBase
     [ObservableProperty]
     private string _submitText = Localizer.Get("product.form.save");
 
-    public event Action? Saved;
-    public event Action? Cancelled;
+    private readonly INavigationService _nav;
+    private readonly ILogger<ProductFormViewModel> _logger;
 
-    public ProductFormViewModel(IProductService productService)
+    public ProductFormViewModel(
+        IProductService productService,
+        INavigationService nav,
+        ILogger<ProductFormViewModel> logger)
     {
         _productService = productService;
+        _nav = nav;
+        _logger = logger;
     }
 
     public void LoadForCreate()
@@ -134,7 +140,7 @@ public partial class ProductFormViewModel : ViewModelBase
 
                 var result = await _productService.UpdateProductAsync(request);
                 if (result is not null)
-                    Saved?.Invoke();
+                    _nav.GoBack();
                 else
                 {
                     HasError = true;
@@ -158,7 +164,7 @@ public partial class ProductFormViewModel : ViewModelBase
 
                 var result = await _productService.CreateProductAsync(request);
                 if (result is not null)
-                    Saved?.Invoke();
+                    _nav.GoBack();
                 else
                 {
                     HasError = true;
@@ -180,7 +186,7 @@ public partial class ProductFormViewModel : ViewModelBase
     [RelayCommand]
     private void Cancel()
     {
-        Cancelled?.Invoke();
+        _nav.GoBack();
     }
 
     private bool CanSave()

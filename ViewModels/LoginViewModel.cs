@@ -59,8 +59,9 @@ public partial class LoginViewModel : ViewModelBase
 
             if (result.Success && result.Data is not null)
             {
-                _session.Token = result.Data.Token;
-                _session.User = result.Data;
+                // SessionService.Login persists the token to disk (encrypted via DataProtection)
+                // so the user stays logged in across app restarts.
+                _session.Login(result.Data);
 
                 _logger.LogInformation("Login succeeded for {Email} (role: {Role})",
                     result.Data.Email, result.Data.Role);

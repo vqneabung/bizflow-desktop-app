@@ -72,7 +72,7 @@
             </StackPanel>
 
             <!-- DataGrid -->
-            <DataGrid ItemsSource="{ReflectionBinding Customers}"
+            <DataGrid ItemsSource="{ReflectionBinding Items}"
                       AutoGenerateColumns="False" IsReadOnly="True"
                       GridLinesVisibility="Horizontal" BorderThickness="0"
                       Background="{DynamicResource CardBg}" CornerRadius="12"

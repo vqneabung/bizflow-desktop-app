@@ -27,8 +27,7 @@ public partial class CustomerDetailViewModel : ViewModelBase
     [ObservableProperty]
     private string _errorMessage = "";
 
-    public event Action<string>? EditClicked;
-    public event Action? BackClicked;
+    private readonly INavigationService _nav;
 
     // Computed display properties
     public string DebtDisplay => Customer is null ? "" : $"{Customer.TotalDebt:N0} đ";
@@ -36,9 +35,10 @@ public partial class CustomerDetailViewModel : ViewModelBase
     public string CreatedDate => Customer?.CreatedAt.ToString("dd/MM/yyyy HH:mm") ?? "";
     public string UpdatedDate => Customer?.UpdatedAt?.ToString("dd/MM/yyyy HH:mm") ?? "";
 
-    public CustomerDetailViewModel(ICustomerService customerService)
+    public CustomerDetailViewModel(ICustomerService customerService, INavigationService nav)
     {
         _customerService = customerService;
+        _nav = nav;
     }
 
     public async Task LoadAsync(string id)
@@ -75,7 +75,7 @@ public partial class CustomerDetailViewModel : ViewModelBase
     private void Edit()
     {
         if (Customer is not null)
-            EditClicked?.Invoke(Customer.Id);
+            _nav.NavigateToFresh<CustomerFormViewModel>(vm => vm.LoadForEdit(Customer.Id));
     }
 
     [RelayCommand]
@@ -93,6 +93,6 @@ public partial class CustomerDetailViewModel : ViewModelBase
     [RelayCommand]
     private void GoBack()
     {
-        BackClicked?.Invoke();
+        _nav.GoBack();
     }
 }

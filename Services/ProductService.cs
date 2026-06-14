@@ -40,6 +40,10 @@ public class ProductService : IProductService
             var result = await response.Content
                 .ReadFromJsonAsync<PaginatedResponse<ProductResponse>>(JsonOptions);
 
+            _logger.LogInformation("Product list received: {Count} items, totalElements={Total}",
+                result?.Data?.Count ?? 0,
+                result?.Pagination?.TotalElements ?? 0);
+
             return result ?? new PaginatedResponse<ProductResponse>([], new PaginationInfo(1, 20, 0, 0));
         }
         catch (Exception ex)

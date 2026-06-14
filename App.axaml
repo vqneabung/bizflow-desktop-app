@@ -1,15 +1,37 @@
 <Application xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:bizflow_desktop_app.ViewModels"
+             xmlns:views="using:bizflow_desktop_app.Views"
              x:Class="bizflow_desktop_app.App"
-             xmlns:local="using:bizflow_desktop_app"
              RequestedThemeVariant="Default">
              <!-- "Default" ThemeVariant follows system theme variant. "Dark" or "Light" are other available options. -->
 
+    <!-- DataTemplates: explicit per-VM mapping. Avalonia matches ContentControl/Content
+         against the DataContext type and instantiates the corresponding View.
+         ViewLocator remains registered in DI for any code that resolves it directly. -->
     <Application.DataTemplates>
-        <local:ViewLocator/>
+        <DataTemplate DataType="vm:ProductListViewModel">
+            <views:ProductListView />
+        </DataTemplate>
+        <DataTemplate DataType="vm:ProductDetailViewModel">
+            <views:ProductDetailView />
+        </DataTemplate>
+        <DataTemplate DataType="vm:ProductFormViewModel">
+            <views:ProductFormView />
+        </DataTemplate>
+        <DataTemplate DataType="vm:CustomerListViewModel">
+            <views:CustomerListView />
+        </DataTemplate>
+        <DataTemplate DataType="vm:CustomerDetailViewModel">
+            <views:CustomerDetailView />
+        </DataTemplate>
+        <DataTemplate DataType="vm:CustomerFormViewModel">
+            <views:CustomerFormView />
+        </DataTemplate>
     </Application.DataTemplates>
-  
+
     <Application.Styles>
         <FluentTheme />
+        <StyleInclude Source="avares://Avalonia.Controls.DataGrid/Themes/Fluent.xaml" />
     </Application.Styles>
 </Application>

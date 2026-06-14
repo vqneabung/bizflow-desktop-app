@@ -1,37 +1,36 @@
-using System;
-using System.Diagnostics.CodeAnalysis;
 using Avalonia.Controls;
 using Avalonia.Controls.Templates;
 using bizflow_desktop_app.ViewModels;
+using bizflow_desktop_app.Views;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace bizflow_desktop_app;
 
 /// <summary>
-/// Given a view model, returns the corresponding view if possible.
+/// Resolves a View from its ViewModel via DI. Each View-ViewModel pair must be
+/// registered in the service container (see ServiceCollectionExtensions.AddViews).
+///
+/// Pattern-match approach (vs reflection) provides:
+///   - AOT compatibility (no Activator.CreateInstance at runtime)
+///   - Compile-time safety (renames caught by C# compiler)
+///   - DI support (Views can have constructor params, e.g. ILogger)
 /// </summary>
-[RequiresUnreferencedCode(
-    "Default implementation of ViewLocator involves reflection which may be trimmed away.",
-    Url = "https://docs.avaloniaui.net/docs/concepts/view-locator")]
 public class ViewLocator : IDataTemplate
 {
-    public Control? Build(object? param)
+    private readonly IServiceProvider _services;
+
+    public ViewLocator(IServiceProvider services) => _services = services;
+
+    public Control? Build(object? param) => param switch
     {
-        if (param is null)
-            return null;
+        ProductListViewModel => _services.GetRequiredService<ProductListView>(),
+        ProductDetailViewModel => _services.GetRequiredService<ProductDetailView>(),
+        ProductFormViewModel => _services.GetRequiredService<ProductFormView>(),
+        CustomerListViewModel => _services.GetRequiredService<CustomerListView>(),
+        CustomerDetailViewModel => _services.GetRequiredService<CustomerDetailView>(),
+        CustomerFormViewModel => _services.GetRequiredService<CustomerFormView>(),
+        _ => new TextBlock { Text = $"No view registered for {param?.GetType().Name ?? "null"}" }
+    };
 
-        var name = param.GetType().FullName!.Replace("ViewModel", "View", StringComparison.Ordinal);
-        var type = Type.GetType(name);
-
-        if (type != null)
-        {
-            return (Control)Activator.CreateInstance(type)!;
-        }
-
-        return new TextBlock { Text = "Not Found: " + name };
-    }
-
-    public bool Match(object? data)
-    {
-        return data is ViewModelBase;
-    }
+    public bool Match(object? data) => data is ViewModelBase;
 }

@@ -27,8 +27,7 @@ public partial class ProductDetailViewModel : ViewModelBase
     [ObservableProperty]
     private string _errorMessage = "";
 
-    public event Action<string>? EditClicked;
-    public event Action? BackClicked;
+    private readonly INavigationService _nav;
 
     // Computed display properties
     public string PriceDisplay => Product is null ? "" : $"{Product.Price:N0} đ";
@@ -39,9 +38,10 @@ public partial class ProductDetailViewModel : ViewModelBase
     public string CreatedDate => Product?.CreatedAt.ToString("dd/MM/yyyy HH:mm") ?? "";
     public string UpdatedDate => Product?.UpdatedAt?.ToString("dd/MM/yyyy HH:mm") ?? "";
 
-    public ProductDetailViewModel(IProductService productService)
+    public ProductDetailViewModel(IProductService productService, INavigationService nav)
     {
         _productService = productService;
+        _nav = nav;
     }
 
     public async Task LoadAsync(string id)
@@ -80,7 +80,7 @@ public partial class ProductDetailViewModel : ViewModelBase
     private void Edit()
     {
         if (Product is not null)
-            EditClicked?.Invoke(Product.Id);
+            _nav.NavigateToFresh<ProductFormViewModel>(vm => vm.LoadForEdit(Product.Id));
     }
 
     [RelayCommand]
@@ -99,6 +99,6 @@ public partial class ProductDetailViewModel : ViewModelBase
     [RelayCommand]
     private void GoBack()
     {
-        BackClicked?.Invoke();
+        _nav.GoBack();
     }
 }

@@ -6,34 +6,19 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using bizflow_desktop_app.Models;
 using bizflow_desktop_app.Services;
-using Jeek.Avalonia.Localization;
+using bizflow_desktop_app.ViewModels.Base;
+using Microsoft.Extensions.Logging;
 
 namespace bizflow_desktop_app.ViewModels;
 
 /// <summary>
-/// ProductListViewModel — danh sách sản phẩm với search, category filter, sort, pagination.
+/// Product list with search, category filter, sort, pagination.
+/// Inherits loading/error/empty/pagination state from PagedListViewModelBase.
 /// </summary>
-public partial class ProductListViewModel : ViewModelBase
+public partial class ProductListViewModel : PagedListViewModelBase<ProductResponse>
 {
     private readonly IProductService _productService;
-
-    [ObservableProperty]
-    private ObservableCollection<ProductResponse> _products = [];
-
-    [ObservableProperty]
-    private bool _isLoading;
-
-    [ObservableProperty]
-    private bool _hasError;
-
-    [ObservableProperty]
-    private string _errorMessage = "";
-
-    [ObservableProperty]
-    private bool _isEmpty;
-
-    [ObservableProperty]
-    private string _searchText = "";
+    private readonly INavigationService _nav;
 
     [ObservableProperty]
     private string _selectedCategory = "";
@@ -45,140 +30,53 @@ public partial class ProductListViewModel : ViewModelBase
     private string _sortDir = "desc";
 
     [ObservableProperty]
-    private int _currentPage = 1;
-
-    [ObservableProperty]
-    private int _totalPages = 1;
-
-    [ObservableProperty]
-    private int _totalCount;
-
-    [ObservableProperty]
-    private bool _hasPrevious;
-
-    [ObservableProperty]
-    private bool _hasNext;
-
-    [ObservableProperty]
     private ObservableCollection<string> _categories = [];
 
-    public event Action<string>? ProductSelected;
-    public event Action? CreateClicked;
+    protected override string ErrorLoadKey => "product.list.errorLoad";
 
-    public ProductListViewModel(IProductService productService)
+    public ProductListViewModel(
+        IProductService productService,
+        INavigationService nav,
+        ILogger<ProductListViewModel> logger)
     {
         _productService = productService;
+        _nav = nav;
     }
 
-    [RelayCommand]
-    private async Task LoadProductsAsync()
+    protected override async Task<PaginatedResponse<ProductResponse>> FetchAsync(int page, int size, string? search)
     {
-        IsLoading = true;
-        HasError = false;
-
-        try
-        {
-            var searchParams = new ProductSearchParams(
-                Search: string.IsNullOrWhiteSpace(SearchText) ? null : SearchText.Trim(),
-                Category: string.IsNullOrWhiteSpace(SelectedCategory) ? null : SelectedCategory,
-                SortBy: SortBy,
-                SortDir: SortDir,
-                Page: CurrentPage,
-                PageSize: 20
-            );
-
-            var result = await _productService.GetProductsAsync(searchParams);
-
-            Products = new ObservableCollection<ProductResponse>(result.Data);
-            TotalCount = (int)result.Pagination.TotalElements;
-            TotalPages = result.Pagination.TotalPages;
-            HasPrevious = CurrentPage > 1;
-            HasNext = CurrentPage < TotalPages;
-            IsEmpty = Products.Count == 0;
-
-            // Extract unique categories for filter dropdown (client-side only)
-            Categories = new ObservableCollection<string>(
-                Products.Where(p => !string.IsNullOrWhiteSpace(p.CategoryName))
-                       .Select(p => p.CategoryName!)
-                       .Distinct()
-                       .OrderBy(c => c)
-            );
-        }
-        catch (Exception ex)
-        {
-            HasError = true;
-            ErrorMessage = $"{Localizer.Get("product.list.errorLoad")}: {ex.Message}";
-            Products = [];
-            IsEmpty = true;
-        }
-        finally
-        {
-            IsLoading = false;
-        }
+        var searchParams = new ProductSearchParams(
+            Search: search,
+            Category: string.IsNullOrWhiteSpace(SelectedCategory) ? null : SelectedCategory,
+            SortBy: SortBy,
+            SortDir: SortDir,
+            Page: page,
+            PageSize: size
+        );
+        return await _productService.GetProductsAsync(searchParams);
     }
 
-    [RelayCommand]
-    private async Task RefreshAsync()
+    /// <summary>After fetch: extract unique category names for the filter dropdown.</summary>
+    protected override void OnItemsLoaded(ObservableCollection<ProductResponse> items)
     {
-        CurrentPage = 1;
-        await LoadProductsAsync();
-    }
-
-    [RelayCommand]
-    private void DoSearch()
-    {
-        CurrentPage = 1;
-        // Trigger load via command
-        LoadProductsCommand.Execute(null);
-    }
-
-    [RelayCommand]
-    private void FilterByCategory(string? category)
-    {
-        SelectedCategory = category ?? "";
-        CurrentPage = 1;
-        LoadProductsCommand.Execute(null);
-    }
-
-    [RelayCommand]
-    private void GoToPage(int page)
-    {
-        if (page < 1 || page > TotalPages) return;
-        CurrentPage = page;
-        LoadProductsCommand.Execute(null);
-    }
-
-    [RelayCommand]
-    private void SortByColumn(string column)
-    {
-        if (SortBy == column)
-        {
-            SortDir = SortDir == "asc" ? "desc" : "asc";
-        }
-        else
-        {
-            SortBy = column;
-            SortDir = "asc";
-        }
-        CurrentPage = 1;
-        LoadProductsCommand.Execute(null);
+        Categories = new ObservableCollection<string>(
+            items.Where(p => !string.IsNullOrWhiteSpace(p.CategoryName))
+                 .Select(p => p.CategoryName!)
+                 .Distinct()
+                 .OrderBy(c => c)
+        );
     }
 
     [RelayCommand]
     private void SelectProduct(string? id)
     {
         if (id is not null)
-            ProductSelected?.Invoke(id);
+            _nav.NavigateToFresh<ProductDetailViewModel>(vm => _ = vm.LoadAsync(id));
     }
 
     [RelayCommand]
     private void CreateNew()
     {
-        CreateClicked?.Invoke();
-    }
-
-    partial void OnSearchTextChanged(string value)
-    {
-        // Auto-search after typing (debounce handled by command)
+        _nav.NavigateToFresh<ProductFormViewModel>(vm => vm.LoadForCreate());
     }
 }

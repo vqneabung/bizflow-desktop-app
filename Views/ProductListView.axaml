@@ -1,6 +1,7 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
               xmlns:vm="using:bizflow_desktop_app.ViewModels"
+              xmlns:models="using:bizflow_desktop_app.Models"
               xmlns:l="using:Jeek.Avalonia.Localization"
              x:Class="bizflow_desktop_app.Views.ProductListView"
              x:DataType="vm:ProductListViewModel">
@@ -91,7 +92,11 @@
             </StackPanel>
 
             <!-- Product DataGrid (always visible, shows data when loaded) -->
-            <DataGrid ItemsSource="{ReflectionBinding Products}"
+            <!-- x:CompileBindings="False" — DataGrid columns need runtime DataContext
+                 resolution (each row is a ProductResponse, not the VM). Compiled
+                 bindings would try to resolve Name/CategoryName on ProductListViewModel. -->
+            <DataGrid x:CompileBindings="False"
+                       ItemsSource="{Binding Items}"
                       AutoGenerateColumns="False"
                       IsReadOnly="True"
                       GridLinesVisibility="Horizontal"
@@ -101,17 +106,18 @@
                       RowHeight="48"
                       FontSize="13"
                       SelectionMode="Single"
+                      HeadersVisibility="Column"
                       DoubleTapped="OnRowDoubleTapped">
 
                 <DataGrid.Columns>
-                    <DataGridTextColumn Header="{l:Localize product.list.table.name}" Binding="{ReflectionBinding Name}" Width="*" />
-                    <DataGridTextColumn Header="{l:Localize product.list.table.category}" Binding="{ReflectionBinding CategoryName}" Width="120" />
-                    <DataGridTextColumn Header="{l:Localize product.list.table.price}" Binding="{ReflectionBinding Price, StringFormat='{}{0:N0} đ'}" Width="130" />
-                    <DataGridTextColumn Header="{l:Localize product.list.table.stock}" Binding="{ReflectionBinding Stock}" Width="80" />
-                    <DataGridTextColumn Header="{l:Localize product.list.table.barcode}" Binding="{ReflectionBinding Barcode}" Width="130" />
+                    <DataGridTextColumn Header="{l:Localize product.list.table.name}" Binding="{Binding Name}" Width="*" />
+                    <DataGridTextColumn Header="{l:Localize product.list.table.category}" Binding="{Binding CategoryName}" Width="120" />
+                    <DataGridTextColumn Header="{l:Localize product.list.table.price}" Binding="{Binding Price, StringFormat='{}{0:N0} đ'}" Width="130" />
+                    <DataGridTextColumn Header="{l:Localize product.list.table.stock}" Binding="{Binding Stock}" Width="80" />
+                    <DataGridTextColumn Header="{l:Localize product.list.table.barcode}" Binding="{Binding Barcode}" Width="130" />
                     <DataGridTemplateColumn Header="{l:Localize product.list.table.status}" Width="80">
                         <DataGridTemplateColumn.CellTemplate>
-                            <DataTemplate>
+                            <DataTemplate DataType="models:ProductResponse">
                                 <TextBlock Text="{l:Localize product.detail.active}"
                                            Foreground="#059669"
                                            FontSize="12"
@@ -122,7 +128,7 @@
                     </DataGridTemplateColumn>
                     <DataGridTemplateColumn Header="{l:Localize product.list.table.actions}" Width="100">
                         <DataGridTemplateColumn.CellTemplate>
-                            <DataTemplate>
+                            <DataTemplate DataType="models:ProductResponse">
                                 <Button Content="View"
                                         Click="OnViewButtonClick"
                                         Background="{DynamicResource AccentPurple}"

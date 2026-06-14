@@ -87,7 +87,7 @@ public class ApiService : IApiService
     /// Attempt to deserialize error body from non-success HTTP response.
     /// Falls back to status code text if parsing fails.
     /// </summary>
-    private static async Task<string> TryReadErrorBody(HttpResponseMessage response)
+    private async Task<string> TryReadErrorBody(HttpResponseMessage response)
     {
         try
         {
@@ -102,8 +102,9 @@ public class ApiService : IApiService
 
             return body;
         }
-        catch
+        catch (JsonException ex)
         {
+            _logger.LogWarning(ex, "Failed to parse error response body as JSON");
             return $"HTTP {(int)response.StatusCode}";
         }
     }

@@ -49,12 +49,12 @@ public partial class CustomerFormViewModel : ViewModelBase
     [ObservableProperty]
     private string _submitText = Localizer.Get("customer.form.save");
 
-    public event Action? Saved;
-    public event Action? Cancelled;
+    private readonly INavigationService _nav;
 
-    public CustomerFormViewModel(ICustomerService customerService)
+    public CustomerFormViewModel(ICustomerService customerService, INavigationService nav)
     {
         _customerService = customerService;
+        _nav = nav;
     }
 
     public void LoadForCreate()
@@ -111,7 +111,7 @@ public partial class CustomerFormViewModel : ViewModelBase
 
                 var result = await _customerService.UpdateCustomerAsync(_editId, request);
                 if (result is not null)
-                    Saved?.Invoke();
+                    _nav.GoBack();
                 else
                 {
                     HasError = true;
@@ -130,7 +130,7 @@ public partial class CustomerFormViewModel : ViewModelBase
 
                 var result = await _customerService.CreateCustomerAsync(request);
                 if (result is not null)
-                    Saved?.Invoke();
+                    _nav.GoBack();
                 else
                 {
                     HasError = true;
@@ -152,7 +152,7 @@ public partial class CustomerFormViewModel : ViewModelBase
     [RelayCommand]
     private void Cancel()
     {
-        Cancelled?.Invoke();
+        _nav.GoBack();
     }
 
     private bool CanSave()

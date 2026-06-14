@@ -1,72 +1,58 @@
 ﻿using System;
+using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using bizflow_desktop_app.Services;
+using bizflow_desktop_app.ViewModels;
 using Jeek.Avalonia.Localization;
+using Microsoft.Extensions.Logging;
 
 namespace bizflow_desktop_app.ViewModels;
 
 /// <summary>
-/// MainWindowViewModel — điều khiển navigation sidebar + ContentControl.
+/// MainWindowViewModel — shell coordinator. Owns the top nav buttons and the
+/// logout flow, and re-exposes <see cref="INavigationService.CurrentPage"/>
+/// so MainWindow.axaml can bind it to a ContentControl.
+///
+/// All in-app page navigation (List → Detail → Form → Back) is now handled
+/// by <see cref="INavigationService"/> — no event subscriptions between VMs.
 /// </summary>
 public partial class MainWindowViewModel : ViewModelBase
 {
-    private readonly IApiService _api;
+    private readonly INavigationService _nav;
     private readonly ISessionService _session;
-    private readonly ProductListViewModel _productListVM;
-    private readonly ProductDetailViewModel _productDetailVM;
-    private readonly ProductFormViewModel _productFormVM;
-    private readonly CustomerListViewModel _customerListVM;
-    private readonly CustomerDetailViewModel _customerDetailVM;
-    private readonly CustomerFormViewModel _customerFormVM;
+    private readonly IApiService _api;
+    private readonly ILogger<MainWindowViewModel> _logger;
 
-    /// <summary>Emitted khi logout hoàn tất — View sẽ đóng MainWindow, mở LoginWindow.</summary>
+    /// <summary>Emitted when logout completes — View closes MainWindow, opens LoginWindow.</summary>
     public event Action? LogoutSucceeded;
 
     public MainWindowViewModel(
-        IApiService api,
+        INavigationService nav,
         ISessionService session,
-        ProductListViewModel productListVM,
-        ProductDetailViewModel productDetailVM,
-        ProductFormViewModel productFormVM,
-        CustomerListViewModel customerListVM,
-        CustomerDetailViewModel customerDetailVM,
-        CustomerFormViewModel customerFormVM)
+        IApiService api,
+        ILogger<MainWindowViewModel> logger)
     {
-        _api = api;
+        _nav = nav;
         _session = session;
+        _api = api;
+        _logger = logger;
+
+        // Mirror nav service's CurrentPage into our property so XAML can bind it.
+        _nav.CurrentPageChanged += () => OnPropertyChanged(nameof(CurrentPage));
+
         UserName = session.User?.Name ?? session.User?.Email ?? Localizer.Get("common.notAvailable");
         UserEmail = session.User?.Email ?? "";
+        _currentLanguageDisplay = Localizer.Language == "vi"
+            ? Localizer.Get("nav.languageVi")
+            : Localizer.Get("nav.languageEn");
 
-        // Product navigation
-        _productListVM = productListVM;
-        _productDetailVM = productDetailVM;
-        _productFormVM = productFormVM;
-        _productListVM.ProductSelected += OnProductSelected;
-        _productListVM.CreateClicked += OnCreateClicked;
-        _productDetailVM.EditClicked += OnEditClicked;
-        _productDetailVM.BackClicked += GoToProductList;
-        _productFormVM.Saved += GoToProductList;
-        _productFormVM.Cancelled += GoToProductList;
-
-        // Customer navigation
-        _customerListVM = customerListVM;
-        _customerDetailVM = customerDetailVM;
-        _customerFormVM = customerFormVM;
-        _customerListVM.CustomerSelected += OnCustomerSelected;
-        _customerListVM.CreateClicked += OnCustomerCreateClicked;
-        _customerDetailVM.EditClicked += OnCustomerEditClicked;
-        _customerDetailVM.BackClicked += GoToCustomerList;
-        _customerFormVM.Saved += GoToCustomerList;
-        _customerFormVM.Cancelled += GoToCustomerList;
-
-        // Start at product list + trigger load
-        _productListVM.LoadProductsCommand.Execute(null);
-        CurrentPage = _productListVM;
+        // Start at product list. Each nav entry resolves a fresh VM from DI,
+        // so subsequent visits get a clean state.
+        _nav.NavigateToFresh<ProductListViewModel>(vm => vm.LoadCommand.Execute(null));
     }
 
-    [ObservableProperty]
-    private ObservableObject _currentPage = null!;
+    public ViewModelBase? CurrentPage => _nav.CurrentPage;
 
     [ObservableProperty]
     private string _userName = "";
@@ -74,74 +60,16 @@ public partial class MainWindowViewModel : ViewModelBase
     [ObservableProperty]
     private string _userEmail = "";
 
-    // ── Product navigation ──
+    [ObservableProperty]
+    private string _currentLanguageDisplay = "";
 
     [RelayCommand]
     private void GoToProducts()
-    {
-        _productListVM.LoadProductsCommand.Execute(null);
-        CurrentPage = _productListVM;
-    }
-
-    private void GoToProductList()
-    {
-        _productListVM.RefreshCommand.Execute(null);
-        CurrentPage = _productListVM;
-    }
-
-    private async void OnProductSelected(string productId)
-    {
-        await _productDetailVM.LoadAsync(productId);
-        CurrentPage = _productDetailVM;
-    }
-
-    private void OnCreateClicked()
-    {
-        _productFormVM.LoadForCreate();
-        CurrentPage = _productFormVM;
-    }
-
-    private void OnEditClicked(string productId)
-    {
-        _productFormVM.LoadForEdit(productId);
-        CurrentPage = _productFormVM;
-    }
-
-    // ── Customer navigation ──
+        => _nav.NavigateToFresh<ProductListViewModel>(vm => vm.LoadCommand.Execute(null));
 
     [RelayCommand]
     private void GoToCustomers()
-    {
-        _customerListVM.LoadCustomersCommand.Execute(null);
-        CurrentPage = _customerListVM;
-    }
-
-    private void GoToCustomerList()
-    {
-        _customerListVM.RefreshCommand.Execute(null);
-        CurrentPage = _customerListVM;
-    }
-
-    private async void OnCustomerSelected(string customerId)
-    {
-        await _customerDetailVM.LoadAsync(customerId);
-        CurrentPage = _customerDetailVM;
-    }
-
-    private void OnCustomerCreateClicked()
-    {
-        _customerFormVM.LoadForCreate();
-        CurrentPage = _customerFormVM;
-    }
-
-    private void OnCustomerEditClicked(string customerId)
-    {
-        _customerFormVM.LoadForEdit(customerId);
-        CurrentPage = _customerFormVM;
-    }
-
-    [ObservableProperty]
-    private string _currentLanguageDisplay = Localizer.Language == "vi" ? "Tiếng Việt" : "English";
+        => _nav.NavigateToFresh<CustomerListViewModel>(vm => vm.LoadCommand.Execute(null));
 
     [RelayCommand]
     private void ToggleLanguage()
@@ -149,12 +77,12 @@ public partial class MainWindowViewModel : ViewModelBase
         if (Localizer.Language == "vi")
         {
             Localizer.Language = "en";
-            CurrentLanguageDisplay = "English";
+            CurrentLanguageDisplay = Localizer.Get("nav.languageEn");
         }
         else
         {
             Localizer.Language = "vi";
-            CurrentLanguageDisplay = "Tiếng Việt";
+            CurrentLanguageDisplay = Localizer.Get("nav.languageVi");
         }
     }
 
@@ -163,6 +91,7 @@ public partial class MainWindowViewModel : ViewModelBase
     {
         await _api.LogoutAsync();
         _session.Clear();
+        _logger.LogInformation("User logged out");
         LogoutSucceeded?.Invoke();
     }
 }
