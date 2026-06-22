@@ -121,6 +121,43 @@
                     </StackPanel>
                 </Grid>
             </Border>
+
+            <!-- Inventory history -->
+            <Border Background="{DynamicResource CardBg}"
+                    CornerRadius="12" Padding="24"
+                    BorderBrush="#E5E7EB" BorderThickness="1">
+                <StackPanel Spacing="12">
+                    <TextBlock Text="{l:Localize product.history.title}"
+                               FontSize="16"
+                               FontWeight="SemiBold" />
+                    <ProgressBar IsIndeterminate="True"
+                                 IsVisible="{ReflectionBinding IsLoadingHistory}"
+                                 Height="3"
+                                 Foreground="{DynamicResource AccentPurple}" />
+                    <DataGrid ItemsSource="{ReflectionBinding InventoryHistory}"
+                              AutoGenerateColumns="False"
+                              IsReadOnly="True"
+                              x:CompileBindings="False"
+                              HeadersVisibility="All"
+                              GridLinesVisibility="Horizontal"
+                              BorderThickness="1"
+                              BorderBrush="#E5E7EB"
+                              MaxHeight="300">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="{l:Localize product.history.time}"
+                                                Binding="{Binding CreatedAt, StringFormat=yyyy-MM-dd HH:mm}" />
+                            <DataGridTextColumn Header="{l:Localize product.history.type}"
+                                                Binding="{Binding MovementType}" />
+                            <DataGridTextColumn Header="{l:Localize product.history.quantity}"
+                                                Binding="{Binding Quantity}" />
+                            <DataGridTextColumn Header="{l:Localize product.history.balanceAfter}"
+                                                Binding="{Binding BalanceAfter}" />
+                            <DataGridTextColumn Header="{l:Localize product.history.reference}"
+                                                Binding="{Binding ReferenceNumber}" />
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </StackPanel>
+            </Border>
         </StackPanel>
     </ScrollViewer>
 </UserControl>

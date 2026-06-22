@@ -64,6 +64,12 @@
   "product.detail.notFound": "Product not found",
   "product.detail.errorFetch": "Failed to load product",
   "product.detail.dateInfo": "Date Info",
+  "product.history.title": "Inventory History",
+  "product.history.time": "Time",
+  "product.history.type": "Type",
+  "product.history.quantity": "Quantity",
+  "product.history.balanceAfter": "Balance After",
+  "product.history.reference": "Reference",
 
   "product.form.createTitle": "Create Product",
   "product.form.editTitle": "Edit Product",

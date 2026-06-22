@@ -64,6 +64,12 @@
   "product.detail.notFound": "Không tìm thấy sản phẩm",
   "product.detail.errorFetch": "Tải thông tin sản phẩm thất bại",
   "product.detail.dateInfo": "Thông tin ngày",
+  "product.history.title": "Lịch sử tồn kho",
+  "product.history.time": "Thời gian",
+  "product.history.type": "Loại",
+  "product.history.quantity": "Số lượng",
+  "product.history.balanceAfter": "Tồn sau",
+  "product.history.reference": "Tham chiếu",
 
   "product.form.createTitle": "Thêm sản phẩm",
   "product.form.editTitle": "Sửa sản phẩm",

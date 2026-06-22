@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -20,6 +21,12 @@ public partial class ProductDetailViewModel : ViewModelBase
 
     [ObservableProperty]
     private bool _isLoading;
+
+    [ObservableProperty]
+    private bool _isLoadingHistory;
+
+    [ObservableProperty]
+    private List<InventoryHistoryResponse> _inventoryHistory = new();
 
     [ObservableProperty]
     private bool _hasError;
@@ -58,6 +65,23 @@ public partial class ProductDetailViewModel : ViewModelBase
             {
                 HasError = true;
                 ErrorMessage = Localizer.Get("product.detail.notFound");
+            }
+            else
+            {
+                try
+                {
+                    IsLoadingHistory = true;
+                    var historyResult = await _productService.GetInventoryHistoryAsync(id, 1, 20);
+                    InventoryHistory = historyResult?.Data ?? new();
+                }
+                catch
+                {
+                    InventoryHistory = new();
+                }
+                finally
+                {
+                    IsLoadingHistory = false;
+                }
             }
         }
         catch (Exception ex)

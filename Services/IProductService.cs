@@ -19,4 +19,7 @@ public interface IProductService
 
     [Patch("/api/products/{id}/deactivate")]
     Task<Models.ApiResponse<object>> DeactivateProductAsync(string id);
+
+    [Get("/api/products/{id}/inventory-history")]
+    Task<PaginatedResponse<InventoryHistoryResponse>> GetInventoryHistoryAsync(string id, [Query] int page = 1, [Query] int size = 20);
 }
