@@ -29,6 +29,14 @@ public class ViewLocator : IDataTemplate
         CustomerListViewModel => _services.GetRequiredService<CustomerListView>(),
         CustomerDetailViewModel => _services.GetRequiredService<CustomerDetailView>(),
         CustomerFormViewModel => _services.GetRequiredService<CustomerFormView>(),
+        DashboardViewModel => _services.GetRequiredService<DashboardView>(),
+        OrderListViewModel => _services.GetRequiredService<OrderListView>(),
+        OrderCreateViewModel => _services.GetRequiredService<OrderCreateView>(),
+        OrderDetailViewModel => _services.GetRequiredService<OrderDetailView>(),
+        StockImportListViewModel => _services.GetRequiredService<StockImportListView>(),
+        StockImportCreateViewModel => _services.GetRequiredService<StockImportCreateView>(),
+        StockImportDetailViewModel => _services.GetRequiredService<StockImportDetailView>(),
+        ReportViewModel => _services.GetRequiredService<ReportView>(),
         _ => new TextBlock { Text = $"No view registered for {param?.GetType().Name ?? "null"}" }
     };
 

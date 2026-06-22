@@ -6,6 +6,7 @@ using Avalonia.Markup.Xaml;
 using bizflow_desktop_app.Services;
 using bizflow_desktop_app.ViewModels;
 using bizflow_desktop_app.Views;
+using FluentAvalonia.Styling;
 using Jeek.Avalonia.Localization;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.Extensions.Configuration;
@@ -27,6 +28,7 @@ public partial class App : Application
     public override void Initialize()
     {
         AvaloniaXamlLoader.Load(this);
+        Styles.Add(new FluentAvaloniaTheme());
     }
 
     public override void OnFrameworkInitializationCompleted()

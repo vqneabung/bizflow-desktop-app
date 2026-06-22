@@ -1,0 +1,26 @@
+{
+  "name": "bizflow-desktop-app",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": ".",
+  "projectType": "application",
+  "tags": ["scope:desktop", "lang:dotnet", "framework:avalonia"],
+  "targets": {
+    "build": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "dotnet build",
+        "cwd": "{projectRoot}"
+      },
+      "cache": true,
+      "outputs": ["{projectRoot}/bin/**", "{projectRoot}/obj/**"]
+    },
+    "run": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "dotnet run",
+        "cwd": "{projectRoot}"
+      },
+      "cache": false
+    }
+  }
+}

@@ -1,0 +1,134 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:bizflow_desktop_app.ViewModels"
+             xmlns:models="using:bizflow_desktop_app.Models"
+             xmlns:l="using:Jeek.Avalonia.Localization"
+             x:Class="bizflow_desktop_app.Views.StockImportDetailView"
+             x:DataType="vm:StockImportDetailViewModel">
+
+    <ScrollViewer>
+        <StackPanel Spacing="16">
+
+            <!-- Back button -->
+            <Button Content="{l:Localize stockImport.detail.goBack}"
+                    Command="{ReflectionBinding GoBackCommand}"
+                    Background="Transparent"
+                    Foreground="{DynamicResource AccentPurple}"
+                    FontSize="14"
+                    Padding="0"
+                    HorizontalAlignment="Left" />
+
+            <!-- Loading -->
+            <ProgressBar IsIndeterminate="True"
+                         IsVisible="{ReflectionBinding IsLoading}"
+                         Height="3"
+                         Foreground="{DynamicResource AccentPurple}" />
+
+            <!-- Error -->
+            <Border IsVisible="{ReflectionBinding HasError}"
+                    Background="#FEF2F2"
+                    CornerRadius="12" Padding="24">
+                <TextBlock Text="{ReflectionBinding ErrorMessage}"
+                           Foreground="#DC2626"
+                           FontSize="14" />
+            </Border>
+
+            <!-- Detail card -->
+            <Border Background="{DynamicResource CardBg}"
+                    CornerRadius="12" Padding="24"
+                    BorderBrush="#E5E7EB" BorderThickness="1">
+
+                <Grid ColumnDefinitions="1.5*,2*"
+                      RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto"
+                      RowSpacing="16" ColumnSpacing="32">
+
+                    <!-- Reference Number -->
+                    <TextBlock Grid.Row="0" Grid.ColumnSpan="2"
+                               Text="{Binding ReferenceNumberDisplay}"
+                               FontSize="24"
+                               FontWeight="Bold" />
+
+                    <StackPanel Grid.Row="1" Grid.Column="0" Spacing="4">
+                        <TextBlock Text="{l:Localize stockImport.detail.supplier}" FontSize="12" Foreground="Gray" />
+                        <TextBlock Text="{Binding SupplierDisplay}"
+                                   FontSize="15"
+                                   FontWeight="SemiBold" />
+                    </StackPanel>
+
+                    <StackPanel Grid.Row="1" Grid.Column="1" Spacing="4">
+                        <TextBlock Text="{l:Localize stockImport.detail.importDate}" FontSize="12" Foreground="Gray" />
+                        <TextBlock Text="{Binding ImportDateDisplay}" FontSize="15" />
+                    </StackPanel>
+
+                    <StackPanel Grid.Row="2" Grid.Column="0" Spacing="4">
+                        <TextBlock Text="{l:Localize stockImport.detail.totalCost}" FontSize="12" Foreground="Gray" />
+                        <TextBlock Text="{Binding TotalCostDisplay}" FontSize="20" FontWeight="Bold"
+                                   Foreground="{DynamicResource AccentPurple}" />
+                    </StackPanel>
+
+                    <StackPanel Grid.Row="2" Grid.Column="1" Spacing="4">
+                        <TextBlock Text="{l:Localize stockImport.detail.created}" FontSize="12" Foreground="Gray" />
+                        <TextBlock Text="{Binding CreatedDate}" FontSize="15" />
+                    </StackPanel>
+
+                    <StackPanel Grid.Row="3" Grid.Column="0" Spacing="4">
+                        <TextBlock Text="{l:Localize stockImport.detail.updated}" FontSize="12" Foreground="Gray" />
+                        <TextBlock Text="{Binding UpdatedDate}" FontSize="15" />
+                    </StackPanel>
+
+                    <!-- Notes -->
+                    <StackPanel Grid.Row="4" Grid.ColumnSpan="2" Spacing="4">
+                        <TextBlock Text="{l:Localize stockImport.detail.notes}" FontSize="12" Foreground="Gray" />
+                        <TextBlock Text="{ReflectionBinding StockImport.Notes}"
+                                   FontSize="14"
+                                   TextWrapping="Wrap" />
+                    </StackPanel>
+
+                    <!-- Divider -->
+                    <Border Grid.Row="5" Grid.ColumnSpan="2"
+                            Height="1" Background="#E5E7EB" />
+
+                    <!-- Items section -->
+                    <StackPanel Grid.Row="6" Grid.ColumnSpan="2" Spacing="8">
+                        <TextBlock Text="{l:Localize stockImport.detail.items}"
+                                   FontSize="16"
+                                   FontWeight="SemiBold" />
+
+                        <DataGrid x:CompileBindings="False"
+                                  ItemsSource="{Binding StockImport.Items}"
+                                  AutoGenerateColumns="False"
+                                  IsReadOnly="True"
+                                  GridLinesVisibility="Horizontal"
+                                  BorderThickness="0"
+                                  Background="Transparent"
+                                  RowHeight="40"
+                                  FontSize="13"
+                                  HeadersVisibility="Column"
+                                  IsVisible="{Binding HasItems}">
+
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Product" Binding="{Binding ProductName}" Width="*" />
+                                <DataGridTextColumn Header="Quantity" Binding="{Binding Quantity}" Width="100" />
+                                <DataGridTextColumn Header="Unit Cost" Binding="{Binding UnitCost, StringFormat='{}{0:N0} đ'}" Width="120" />
+                                <DataGridTextColumn Header="Subtotal" Binding="{Binding Subtotal, StringFormat='{}{0:N0} đ'}" Width="120" />
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </StackPanel>
+
+                    <!-- GoBack button -->
+                    <StackPanel Grid.Row="7" Grid.ColumnSpan="2"
+                                Orientation="Horizontal" Spacing="12">
+                        <Button Content="{l:Localize stockImport.detail.goBack}"
+                                Command="{ReflectionBinding GoBackCommand}"
+                                Background="{DynamicResource AccentPurple}"
+                                Foreground="White"
+                                FontSize="14"
+                                FontWeight="SemiBold"
+                                Padding="20,10"
+                                CornerRadius="8" />
+                    </StackPanel>
+                </Grid>
+            </Border>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

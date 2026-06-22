@@ -38,7 +38,6 @@ public partial class MainWindowViewModel : ViewModelBase
         _api = api;
         _logger = logger;
 
-        // Mirror nav service's CurrentPage into our property so XAML can bind it.
         _nav.CurrentPageChanged += () => OnPropertyChanged(nameof(CurrentPage));
 
         UserName = session.User?.Name ?? session.User?.Email ?? Localizer.Get("common.notAvailable");
@@ -47,12 +46,13 @@ public partial class MainWindowViewModel : ViewModelBase
             ? Localizer.Get("nav.languageVi")
             : Localizer.Get("nav.languageEn");
 
-        // Start at product list. Each nav entry resolves a fresh VM from DI,
-        // so subsequent visits get a clean state.
-        _nav.NavigateToFresh<ProductListViewModel>(vm => vm.LoadCommand.Execute(null));
+        _nav.NavigateToFresh<DashboardViewModel>();
     }
 
     public ViewModelBase? CurrentPage => _nav.CurrentPage;
+
+    [ObservableProperty]
+    private string _currentPageTitle = "Dashboard";
 
     [ObservableProperty]
     private string _userName = "";
@@ -64,12 +64,46 @@ public partial class MainWindowViewModel : ViewModelBase
     private string _currentLanguageDisplay = "";
 
     [RelayCommand]
+    private void GoToDashboard()
+    {
+        CurrentPageTitle = "Dashboard";
+        _nav.NavigateToFresh<DashboardViewModel>();
+    }
+
+    [RelayCommand]
     private void GoToProducts()
-        => _nav.NavigateToFresh<ProductListViewModel>(vm => vm.LoadCommand.Execute(null));
+    {
+        CurrentPageTitle = "Products";
+        _nav.NavigateToFresh<ProductListViewModel>(vm => vm.LoadCommand.Execute(null));
+    }
 
     [RelayCommand]
     private void GoToCustomers()
-        => _nav.NavigateToFresh<CustomerListViewModel>(vm => vm.LoadCommand.Execute(null));
+    {
+        CurrentPageTitle = "Customers";
+        _nav.NavigateToFresh<CustomerListViewModel>(vm => vm.LoadCommand.Execute(null));
+    }
+
+    [RelayCommand]
+    private void GoToOrders()
+    {
+        CurrentPageTitle = "Orders";
+        _nav.NavigateToFresh<OrderListViewModel>(vm => vm.LoadCommand.Execute(null));
+    }
+
+    [RelayCommand]
+    private void GoToStockImports()
+    {
+        CurrentPageTitle = "Stock Imports";
+        _nav.NavigateToFresh<StockImportListViewModel>(vm => vm.LoadCommand.Execute(null));
+    }
+
+    [RelayCommand]
+    private void GoToReports()
+    {
+        CurrentPageTitle = "Reports";
+        _nav.NavigateToFresh<ReportViewModel>(vm => vm.LoadCommand.Execute(null));
+    }
 
     [RelayCommand]
     private void ToggleLanguage()

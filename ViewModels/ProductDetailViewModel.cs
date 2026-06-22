@@ -51,7 +51,8 @@ public partial class ProductDetailViewModel : ViewModelBase
 
         try
         {
-            Product = await _productService.GetProductAsync(id);
+            var result = await _productService.GetProductAsync(id);
+            Product = result.Data;
 
             if (Product is null)
             {
@@ -88,11 +89,15 @@ public partial class ProductDetailViewModel : ViewModelBase
     {
         if (Product is null) return;
 
-        var success = await _productService.DeactivateProductAsync(Product.Id);
-        if (success)
+        try
         {
-            // Reload to refresh status
+            await _productService.DeactivateProductAsync(Product.Id);
             await LoadAsync(Product.Id);
+        }
+        catch (Exception ex)
+        {
+            HasError = true;
+            ErrorMessage = $"{Localizer.Get("common.error")}: {ex.Message}";
         }
     }
 

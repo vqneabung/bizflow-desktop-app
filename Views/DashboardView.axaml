@@ -1,0 +1,53 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:bizflow_desktop_app.ViewModels"
+             xmlns:l="using:Jeek.Avalonia.Localization"
+             x:Class="bizflow_desktop_app.Views.DashboardView"
+             x:DataType="vm:DashboardViewModel">
+
+    <ScrollViewer Padding="0">
+        <StackPanel Spacing="16" Margin="0">
+            <!-- Error -->
+            <Border Background="#FEF2F2" CornerRadius="8" Padding="16" IsVisible="{ReflectionBinding ErrorMessage}">
+                <TextBlock Text="{ReflectionBinding ErrorMessage}" Foreground="#DC2626" FontSize="14" />
+            </Border>
+
+            <!-- Loading -->
+            <ProgressBar IsIndeterminate="True" IsVisible="{ReflectionBinding IsLoading}" Height="4" />
+
+            <!-- Stat cards grid -->
+            <UniformGrid Columns="3" Rows="2">
+                <Border Background="{DynamicResource CardBg}" CornerRadius="12" Padding="20" Margin="8">
+                    <StackPanel Spacing="8">
+                        <TextBlock Text="{l:Localize dashboard.totalProducts}" FontSize="13" Foreground="#888" />
+                        <TextBlock Text="{ReflectionBinding TotalProducts}" FontSize="28" FontWeight="Bold" Foreground="{DynamicResource AccentPurple}" />
+                    </StackPanel>
+                </Border>
+                <Border Background="{DynamicResource CardBg}" CornerRadius="12" Padding="20" Margin="8">
+                    <StackPanel Spacing="8">
+                        <TextBlock Text="{l:Localize dashboard.ordersThisMonth}" FontSize="13" Foreground="#888" />
+                        <TextBlock Text="{ReflectionBinding OrdersThisMonth}" FontSize="28" FontWeight="Bold" Foreground="{DynamicResource AccentPurple}" />
+                    </StackPanel>
+                </Border>
+                <Border Background="{DynamicResource CardBg}" CornerRadius="12" Padding="20" Margin="8">
+                    <StackPanel Spacing="8">
+                        <TextBlock Text="{l:Localize dashboard.revenueThisMonth}" FontSize="13" Foreground="#888" />
+                        <TextBlock Text="{ReflectionBinding RevenueThisMonth}" FontSize="28" FontWeight="Bold" Foreground="#7C3AED" />
+                    </StackPanel>
+                </Border>
+                <Border Background="{DynamicResource CardBg}" CornerRadius="12" Padding="20" Margin="8">
+                    <StackPanel Spacing="8">
+                        <TextBlock Text="{l:Localize dashboard.totalCustomers}" FontSize="13" Foreground="#888" />
+                        <TextBlock Text="{ReflectionBinding TotalCustomers}" FontSize="28" FontWeight="Bold" Foreground="{DynamicResource AccentPurple}" />
+                    </StackPanel>
+                </Border>
+                <Border Background="{DynamicResource CardBg}" CornerRadius="12" Padding="20" Margin="8">
+                    <StackPanel Spacing="8">
+                        <TextBlock Text="{l:Localize dashboard.lowStockCount}" FontSize="13" Foreground="#888" />
+                        <TextBlock Text="{ReflectionBinding LowStockCount}" FontSize="28" FontWeight="Bold" Foreground="#DC2626" />
+                    </StackPanel>
+                </Border>
+            </UniformGrid>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

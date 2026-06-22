@@ -1,0 +1,215 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:bizflow_desktop_app.ViewModels"
+             xmlns:models="using:bizflow_desktop_app.Models"
+             xmlns:l="using:Jeek.Avalonia.Localization"
+             x:Class="bizflow_desktop_app.Views.StockImportCreateView"
+             x:DataType="vm:StockImportCreateViewModel"
+             x:Name="Root">
+
+    <ScrollViewer>
+        <StackPanel Spacing="16" MaxWidth="900">
+
+            <!-- Header -->
+            <StackPanel Spacing="4">
+                <Button Content="←  Back"
+                        Command="{ReflectionBinding CancelCommand}"
+                        Background="Transparent"
+                        Foreground="{DynamicResource AccentPurple}"
+                        FontSize="14"
+                        Padding="0"
+                        HorizontalAlignment="Left" />
+                <TextBlock Text="{ReflectionBinding Title}"
+                           FontSize="20"
+                           FontWeight="Bold" />
+            </StackPanel>
+
+            <!-- Error banner -->
+            <Border IsVisible="{ReflectionBinding HasError}"
+                    Background="#FEF2F2"
+                    CornerRadius="8" Padding="12"
+                    BorderBrush="#FCA5A5" BorderThickness="1">
+                <TextBlock Text="{ReflectionBinding ErrorMessage}"
+                           Foreground="#DC2626"
+                           FontSize="13" />
+            </Border>
+
+            <!-- Form card -->
+            <Border Background="{DynamicResource CardBg}"
+                    CornerRadius="12" Padding="24"
+                    BorderBrush="#E5E7EB" BorderThickness="1">
+
+                <Grid RowDefinitions="Auto,Auto,Auto,Auto,*,Auto,Auto"
+                      RowSpacing="16">
+
+                    <!-- Reference Number -->
+                    <StackPanel Grid.Row="0" Spacing="4">
+                        <TextBlock Text="{l:Localize stockImport.create.referenceNumber}" FontSize="12" Foreground="Gray" />
+                        <TextBox Text="{ReflectionBinding ReferenceNumber, Mode=TwoWay}"
+                                 FontSize="14" Padding="12,10" />
+                    </StackPanel>
+
+                    <!-- Supplier -->
+                    <StackPanel Grid.Row="1" Spacing="4">
+                        <TextBlock Text="{l:Localize stockImport.create.supplier}" FontSize="12" Foreground="Gray" />
+                        <TextBox Text="{ReflectionBinding Supplier, Mode=TwoWay}"
+                                 FontSize="14" Padding="12,10" />
+                    </StackPanel>
+
+                    <!-- Import Date -->
+                    <StackPanel Grid.Row="2" Spacing="4">
+                        <TextBlock Text="{l:Localize stockImport.create.importDate}" FontSize="12" Foreground="Gray" />
+                        <TextBox Text="{ReflectionBinding ImportDateText, Mode=TwoWay}"
+                                 FontSize="14" Padding="12,10" />
+                    </StackPanel>
+
+                    <!-- Notes -->
+                    <StackPanel Grid.Row="3" Spacing="4">
+                        <TextBlock Text="{l:Localize stockImport.create.notes}" FontSize="12" Foreground="Gray" />
+                        <TextBox Text="{ReflectionBinding Notes, Mode=TwoWay}"
+                                 FontSize="14" Padding="12,10"
+                                 AcceptsReturn="True"
+                                 Height="80" />
+                    </StackPanel>
+
+                    <!-- Divider -->
+                    <Border Grid.Row="4" Height="1" Background="#E5E7EB" />
+
+                    <!-- Items header -->
+                    <Grid Grid.Row="5" ColumnDefinitions="*,Auto">
+                        <TextBlock Text="{l:Localize stockImport.create.items}"
+                                   FontSize="16"
+                                   FontWeight="SemiBold"
+                                   VerticalAlignment="Center" />
+                        <Button Grid.Column="1"
+                                Content="{l:Localize stockImport.create.add_item}"
+                                Command="{ReflectionBinding AddItemCommand}"
+                                Background="{DynamicResource AccentPurple}"
+                                Foreground="White"
+                                FontSize="13"
+                                Padding="16,8"
+                                CornerRadius="6" />
+                    </Grid>
+
+                    <!-- Items DataGrid -->
+                    <DataGrid Grid.Row="6"
+                              x:CompileBindings="False"
+                              ItemsSource="{Binding Items}"
+                              AutoGenerateColumns="False"
+                              GridLinesVisibility="Horizontal"
+                              BorderThickness="0"
+                              Background="Transparent"
+                              RowHeight="44"
+                              FontSize="13"
+                              HeadersVisibility="Column"
+                              MinHeight="150">
+
+                        <DataGrid.Columns>
+                            <DataGridTemplateColumn Header="Product" Width="*">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate DataType="vm:StockImportFormItem">
+                                        <ComboBox ItemsSource="{Binding DataContext.AvailableProducts, ElementName=Root}"
+                                                  SelectedValue="{Binding ProductId, Mode=TwoWay}"
+                                                  SelectedValueBinding="{Binding Id}"
+                                                  FontSize="13"
+                                                  Padding="8,4">
+                                            <ComboBox.ItemTemplate>
+                                                <DataTemplate DataType="models:ProductResponse">
+                                                    <TextBlock Text="{Binding Name}" />
+                                                </DataTemplate>
+                                            </ComboBox.ItemTemplate>
+                                        </ComboBox>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                            <DataGridTemplateColumn Header="Quantity" Width="100">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate DataType="vm:StockImportFormItem">
+                                        <TextBox Text="{Binding Quantity, Mode=TwoWay}"
+                                                 FontSize="13"
+                                                 Padding="8,4" />
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                            <DataGridTemplateColumn Header="Unit Cost" Width="120">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate DataType="vm:StockImportFormItem">
+                                        <TextBox Text="{Binding UnitCost, Mode=TwoWay}"
+                                                 FontSize="13"
+                                                 Padding="8,4" />
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                            <DataGridTemplateColumn Header="Subtotal" Width="120">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate DataType="vm:StockImportFormItem">
+                                        <TextBlock Text="{Binding Subtotal, StringFormat='{}{0:N0} đ'}"
+                                                   FontSize="13"
+                                                   FontWeight="SemiBold"
+                                                   VerticalAlignment="Center"
+                                                   Padding="8,4" />
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                            <DataGridTemplateColumn Header="" Width="60">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate DataType="vm:StockImportFormItem">
+                                        <Button Content="✕"
+                                                Command="{Binding DataContext.RemoveItemCommand, ElementName=Root}"
+                                                CommandParameter="{Binding}"
+                                                Background="Transparent"
+                                                Foreground="#DC2626"
+                                                FontSize="14"
+                                                Padding="8,4" />
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                        </DataGrid.Columns>
+                    </DataGrid>
+
+                    <!-- Total -->
+                    <Border Grid.Row="7" Padding="12,8"
+                            Background="#F5F5F7" CornerRadius="8">
+                        <StackPanel Orientation="Horizontal" Spacing="8"
+                                    HorizontalAlignment="Right">
+                            <TextBlock Text="{l:Localize stockImport.create.total}"
+                                       FontSize="16"
+                                       FontWeight="SemiBold"
+                                       VerticalAlignment="Center" />
+                            <TextBlock Text="{Binding TotalCost, StringFormat='{}{0:N0} đ'}"
+                                       FontSize="20"
+                                       FontWeight="Bold"
+                                       Foreground="{DynamicResource AccentPurple}"
+                                       VerticalAlignment="Center" />
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Action buttons -->
+                    <StackPanel Grid.Row="8" Orientation="Horizontal" Spacing="12">
+                        <Button Content="{ReflectionBinding SubmitText}"
+                                Command="{ReflectionBinding SaveCommand}"
+                                Background="{DynamicResource AccentPurple}"
+                                Foreground="White"
+                                FontSize="14"
+                                FontWeight="SemiBold"
+                                Padding="24,10"
+                                CornerRadius="8" />
+                        <Button Content="{l:Localize stockImport.create.cancel}"
+                                Command="{ReflectionBinding CancelCommand}"
+                                Background="Transparent"
+                                Foreground="Gray"
+                                FontSize="14"
+                                Padding="24,10"
+                                CornerRadius="8" />
+                    </StackPanel>
+                </Grid>
+            </Border>
+
+            <!-- Loading -->
+            <ProgressBar IsIndeterminate="True"
+                         IsVisible="{ReflectionBinding IsSubmitting}"
+                         Height="3"
+                         Foreground="{DynamicResource AccentPurple}" />
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

@@ -1,0 +1,157 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:bizflow_desktop_app.ViewModels"
+             xmlns:l="using:Jeek.Avalonia.Localization"
+             x:Class="bizflow_desktop_app.Views.ReportView"
+             x:DataType="vm:ReportViewModel">
+
+    <ScrollViewer Padding="0">
+        <StackPanel Spacing="16" Margin="0">
+
+            <!-- Error -->
+            <Border Background="#FEF2F2" CornerRadius="8" Padding="16"
+                    IsVisible="{ReflectionBinding ErrorMessage}">
+                <TextBlock Text="{ReflectionBinding ErrorMessage}" Foreground="#DC2626" FontSize="14" />
+            </Border>
+
+            <!-- Loading -->
+            <ProgressBar IsIndeterminate="True" IsVisible="{ReflectionBinding IsLoading}" Height="4" />
+
+            <!-- Header: Title + Range selector -->
+            <Grid ColumnDefinitions="*,Auto,Auto" Margin="0,0,0,8">
+                <TextBlock Text="{l:Localize report.title}" FontSize="22" FontWeight="Bold"
+                           Foreground="{DynamicResource AccentPurple}" VerticalAlignment="Center" />
+                <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
+                    <TextBlock Text="{l:Localize report.range}" FontSize="13" Foreground="#888" VerticalAlignment="Center" />
+                    <ComboBox SelectedItem="{ReflectionBinding SelectedRange}" Width="120">
+                        <ComboBoxItem Content="{l:Localize report.range7d}" Tag="7d" />
+                        <ComboBoxItem Content="{l:Localize report.range30d}" Tag="30d" />
+                        <ComboBoxItem Content="{l:Localize report.rangeThisMonth}" Tag="thisMonth" />
+                    </ComboBox>
+                </StackPanel>
+                <Button Grid.Column="2" Content="{l:Localize report.reload}"
+                        Command="{ReflectionBinding ReloadRevenueCommand}"
+                        Background="{DynamicResource AccentPurple}" Foreground="White"
+                        CornerRadius="6" Padding="12,6" Margin="12,0,0,0" />
+            </Grid>
+
+            <!-- ===== REVENUE SECTION ===== -->
+            <Border Background="{DynamicResource CardBg}" CornerRadius="12" Padding="20">
+                <StackPanel Spacing="12">
+                    <TextBlock Text="{l:Localize report.revenue.title}" FontSize="18" FontWeight="SemiBold" />
+                    <StackPanel Orientation="Horizontal" Spacing="24">
+                        <StackPanel Spacing="4">
+                            <TextBlock Text="{l:Localize report.revenue.total}" FontSize="12" Foreground="#888" />
+                            <TextBlock Text="{ReflectionBinding RevenueTotal, StringFormat={}{0:N0} VND}"
+                                       FontSize="24" FontWeight="Bold" Foreground="#7C3AED" />
+                        </StackPanel>
+                        <StackPanel Spacing="4">
+                            <TextBlock Text="{l:Localize report.revenue.period}" FontSize="12" Foreground="#888" />
+                            <TextBlock FontSize="14">
+                                <Run Text="{ReflectionBinding RevenuePeriodStart}" />
+                                <Run Text=" → " />
+                                <Run Text="{ReflectionBinding RevenuePeriodEnd}" />
+                            </TextBlock>
+                        </StackPanel>
+                    </StackPanel>
+                    <DataGrid ItemsSource="{ReflectionBinding Revenue}" AutoGenerateColumns="False"
+                              IsReadOnly="True" MaxHeight="300">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="{l:Localize report.revenue.date}"
+                                                Binding="{ReflectionBinding Date}" Width="*" />
+                            <DataGridTextColumn Header="{l:Localize report.revenue.amount}"
+                                                Binding="{ReflectionBinding Revenue, StringFormat={}{0:N0} VND}" Width="*" />
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </StackPanel>
+            </Border>
+
+            <!-- ===== BEST SELLING SECTION ===== -->
+            <Border Background="{DynamicResource CardBg}" CornerRadius="12" Padding="20">
+                <StackPanel Spacing="12">
+                    <TextBlock Text="{l:Localize report.bestSelling.title}" FontSize="18" FontWeight="SemiBold" />
+                    <DataGrid ItemsSource="{ReflectionBinding BestSelling}" AutoGenerateColumns="False"
+                              IsReadOnly="True" MaxHeight="300">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="{l:Localize report.bestSelling.product}"
+                                                Binding="{ReflectionBinding ProductName}" Width="*" />
+                            <DataGridTextColumn Header="{l:Localize report.bestSelling.quantity}"
+                                                Binding="{ReflectionBinding QuantitySold, StringFormat={}{0:N0}}" Width="120" />
+                            <DataGridTextColumn Header="{l:Localize report.bestSelling.revenue}"
+                                                Binding="{ReflectionBinding Revenue, StringFormat={}{0:N0} VND}" Width="150" />
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </StackPanel>
+            </Border>
+
+            <!-- ===== INVENTORY SECTION ===== -->
+            <Border Background="{DynamicResource CardBg}" CornerRadius="12" Padding="20">
+                <StackPanel Spacing="12">
+                    <TextBlock Text="{l:Localize report.inventory.title}" FontSize="18" FontWeight="SemiBold" />
+                    <StackPanel Orientation="Horizontal" Spacing="24">
+                        <StackPanel Spacing="4">
+                            <TextBlock Text="{l:Localize report.inventory.totalProducts}" FontSize="12" Foreground="#888" />
+                            <TextBlock Text="{ReflectionBinding Inventory.TotalProducts, StringFormat={}{0:N0}}"
+                                       FontSize="24" FontWeight="Bold" Foreground="{DynamicResource AccentPurple}" />
+                        </StackPanel>
+                        <StackPanel Spacing="4">
+                            <TextBlock Text="{l:Localize report.inventory.totalValue}" FontSize="12" Foreground="#888" />
+                            <TextBlock Text="{ReflectionBinding Inventory.TotalValue, StringFormat={}{0:N0} VND}"
+                                       FontSize="24" FontWeight="Bold" Foreground="{DynamicResource AccentPurple}" />
+                        </StackPanel>
+                    </StackPanel>
+
+                    <TextBlock Text="{l:Localize report.inventory.lowStock}" FontSize="15" FontWeight="SemiBold"
+                               Margin="0,8,0,0" />
+                    <DataGrid ItemsSource="{ReflectionBinding LowStockProducts}" AutoGenerateColumns="False"
+                              IsReadOnly="True" MaxHeight="250">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="{l:Localize report.inventory.product}"
+                                                Binding="{ReflectionBinding ProductName}" Width="*" />
+                            <DataGridTextColumn Header="{l:Localize report.inventory.stock}"
+                                                Binding="{ReflectionBinding Stock, StringFormat={}{0:N0}}" Width="100" />
+                            <DataGridTextColumn Header="{l:Localize report.inventory.minStock}"
+                                                Binding="{ReflectionBinding MinStock, StringFormat={}{0:N0}}" Width="100" />
+                        </DataGrid.Columns>
+                    </DataGrid>
+
+                    <TextBlock Text="{l:Localize report.inventory.byCategory}" FontSize="15" FontWeight="SemiBold"
+                               Margin="0,8,0,0" />
+                    <DataGrid ItemsSource="{ReflectionBinding ByCategory}" AutoGenerateColumns="False"
+                              IsReadOnly="True" MaxHeight="250">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="{l:Localize report.inventory.category}"
+                                                Binding="{ReflectionBinding CategoryName}" Width="*" />
+                            <DataGridTextColumn Header="{l:Localize report.inventory.count}"
+                                                Binding="{ReflectionBinding Count, StringFormat={}{0:N0}}" Width="100" />
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </StackPanel>
+            </Border>
+
+            <!-- ===== DEBT SECTION ===== -->
+            <Border Background="{DynamicResource CardBg}" CornerRadius="12" Padding="20">
+                <StackPanel Spacing="12">
+                    <TextBlock Text="{l:Localize report.debt.title}" FontSize="18" FontWeight="SemiBold" />
+                    <StackPanel Spacing="4">
+                        <TextBlock Text="{l:Localize report.debt.total}" FontSize="12" Foreground="#888" />
+                        <TextBlock Text="{ReflectionBinding TotalDebt, StringFormat={}{0:N0} VND}"
+                                   FontSize="28" FontWeight="Bold" Foreground="#DC2626" />
+                    </StackPanel>
+                    <DataGrid ItemsSource="{ReflectionBinding DebtCustomers}" AutoGenerateColumns="False"
+                              IsReadOnly="True" MaxHeight="300">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="{l:Localize report.debt.customer}"
+                                                Binding="{ReflectionBinding CustomerName}" Width="*" />
+                            <DataGridTextColumn Header="{l:Localize report.debt.amount}"
+                                                Binding="{ReflectionBinding TotalDebt, StringFormat={}{0:N0} VND}" Width="150" />
+                            <DataGridTextColumn Header="{l:Localize report.debt.orders}"
+                                                Binding="{ReflectionBinding OrderCount, StringFormat={}{0:N0}}" Width="120" />
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </StackPanel>
+            </Border>
+
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

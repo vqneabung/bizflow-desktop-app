@@ -48,7 +48,8 @@ public partial class CustomerDetailViewModel : ViewModelBase
 
         try
         {
-            Customer = await _customerService.GetCustomerAsync(id);
+            var result = await _customerService.GetCustomerAsync(id);
+            Customer = result.Data;
 
             if (Customer is null)
             {
@@ -83,10 +84,15 @@ public partial class CustomerDetailViewModel : ViewModelBase
     {
         if (Customer is null) return;
 
-        var success = await _customerService.DeactivateCustomerAsync(Customer.Id);
-        if (success)
+        try
         {
+            await _customerService.DeactivateCustomerAsync(Customer.Id);
             await LoadAsync(Customer.Id);
+        }
+        catch (Exception ex)
+        {
+            HasError = true;
+            ErrorMessage = $"{Localizer.Get("common.error")}: {ex.Message}";
         }
     }
 

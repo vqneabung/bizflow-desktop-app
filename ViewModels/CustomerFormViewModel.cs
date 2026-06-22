@@ -74,7 +74,8 @@ public partial class CustomerFormViewModel : ViewModelBase
 
         try
         {
-            var customer = await _customerService.GetCustomerAsync(id);
+            var result = await _customerService.GetCustomerAsync(id);
+            var customer = result.Data;
             if (customer is not null)
             {
                 Name = customer.Name;
@@ -109,8 +110,8 @@ public partial class CustomerFormViewModel : ViewModelBase
                     Notes: string.IsNullOrWhiteSpace(Notes) ? null : Notes
                 );
 
-                var result = await _customerService.UpdateCustomerAsync(_editId, request);
-                if (result is not null)
+                var updateResult = await _customerService.UpdateCustomerAsync(_editId, request);
+                if (updateResult.Data is not null)
                     _nav.GoBack();
                 else
                 {
@@ -128,8 +129,8 @@ public partial class CustomerFormViewModel : ViewModelBase
                     Notes: string.IsNullOrWhiteSpace(Notes) ? null : Notes
                 );
 
-                var result = await _customerService.CreateCustomerAsync(request);
-                if (result is not null)
+                var createResult = await _customerService.CreateCustomerAsync(request);
+                if (createResult.Data is not null)
                     _nav.GoBack();
                 else
                 {

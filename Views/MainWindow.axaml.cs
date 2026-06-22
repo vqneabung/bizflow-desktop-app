@@ -3,6 +3,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Threading;
+using bizflow_desktop_app.Services;
 using bizflow_desktop_app.ViewModels;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -13,6 +14,13 @@ public partial class MainWindow : Window
     public MainWindow()
     {
         InitializeComponent();
+
+        var services = (Application.Current as App)?.Services;
+        if (services is not null)
+        {
+            var fileSave = services.GetRequiredService<IFileSaveService>();
+            fileSave.SetTopLevel(this);
+        }
     }
 
     protected override void OnDataContextChanged(EventArgs e)

@@ -56,40 +56,68 @@
                                Foreground="{DynamicResource SidebarText}" />
                 </StackPanel>
 
-                <!-- Navigation -->
+                 <!-- Navigation -->
                 <StackPanel Grid.Row="1" Spacing="2" Margin="12,0">
+                    <Button Content="{l:Localize nav.dashboard}"
+                            Command="{ReflectionBinding GoToDashboardCommand}"
+                            Classes="navItem"
+                            Background="Transparent"
+                            Foreground="{DynamicResource SidebarText}"
+                            HorizontalAlignment="Stretch"
+                            HorizontalContentAlignment="Left"
+                            Padding="16,10"
+                            CornerRadius="8"
+                            FontSize="14" />
                     <Button Content="{l:Localize nav.products}"
                             Command="{ReflectionBinding GoToProductsCommand}"
+                            Classes="navItem"
                             Background="Transparent"
                             Foreground="{DynamicResource SidebarText}"
                             HorizontalAlignment="Stretch"
                             HorizontalContentAlignment="Left"
                             Padding="16,10"
                             CornerRadius="8"
-                            FontSize="14">
-                        <Button.Styles>
-                            <Style Selector="Button:pointerover">
-                                <Setter Property="Background" Value="{DynamicResource SidebarHover}" />
-                                <Setter Property="Foreground" Value="White" />
-                            </Style>
-                        </Button.Styles>
-                    </Button>
+                            FontSize="14" />
                     <Button Content="{l:Localize nav.customers}"
                             Command="{ReflectionBinding GoToCustomersCommand}"
+                            Classes="navItem"
                             Background="Transparent"
                             Foreground="{DynamicResource SidebarText}"
                             HorizontalAlignment="Stretch"
                             HorizontalContentAlignment="Left"
                             Padding="16,10"
                             CornerRadius="8"
-                            FontSize="14">
-                        <Button.Styles>
-                            <Style Selector="Button:pointerover">
-                                <Setter Property="Background" Value="{DynamicResource SidebarHover}" />
-                                <Setter Property="Foreground" Value="White" />
-                            </Style>
-                        </Button.Styles>
-                    </Button>
+                            FontSize="14" />
+                    <Button Content="{l:Localize nav.orders}"
+                            Command="{ReflectionBinding GoToOrdersCommand}"
+                            Classes="navItem"
+                            Background="Transparent"
+                            Foreground="{DynamicResource SidebarText}"
+                            HorizontalAlignment="Stretch"
+                            HorizontalContentAlignment="Left"
+                            Padding="16,10"
+                            CornerRadius="8"
+                            FontSize="14" />
+                    <Button Content="{l:Localize nav.stockImports}"
+                            Command="{ReflectionBinding GoToStockImportsCommand}"
+                            Classes="navItem"
+                            Background="Transparent"
+                            Foreground="{DynamicResource SidebarText}"
+                            HorizontalAlignment="Stretch"
+                            HorizontalContentAlignment="Left"
+                            Padding="16,10"
+                            CornerRadius="8"
+                            FontSize="14" />
+                    <Button Content="{l:Localize nav.reports}"
+                            Command="{ReflectionBinding GoToReportsCommand}"
+                            Classes="navItem"
+                            Background="Transparent"
+                            Foreground="{DynamicResource SidebarText}"
+                            HorizontalAlignment="Stretch"
+                            HorizontalContentAlignment="Left"
+                            Padding="16,10"
+                            CornerRadius="8"
+                            FontSize="14" />
                 </StackPanel>
 
                 <!-- Language + User info -->
@@ -149,7 +177,7 @@
                         Padding="24,16"
                         BorderBrush="#E5E7EB"
                         BorderThickness="0,0,0,1">
-                    <TextBlock Text="{l:Localize nav.dashboard}"
+                    <TextBlock Text="{ReflectionBinding CurrentPageTitle}"
                                FontSize="18"
                                FontWeight="SemiBold"
                                Foreground="{DynamicResource AccentPurple}" />
@@ -163,8 +191,21 @@
         </Border>
     </Grid>
 
+    <Window.Styles>
+        <Style Selector="Button.navItem:pointerover">
+            <Setter Property="Background" Value="{DynamicResource SidebarHover}" />
+            <Setter Property="Foreground" Value="White" />
+        </Style>
+        <Style Selector="Button.navItem">
+            <Setter Property="BorderThickness" Value="0" />
+        </Style>
+    </Window.Styles>
+
     <!-- DataTemplate for page switching -->
     <Window.DataTemplates>
+        <DataTemplate DataType="vm:DashboardViewModel">
+            <local:DashboardView />
+        </DataTemplate>
         <DataTemplate DataType="vm:ProductListViewModel">
             <local:ProductListView />
         </DataTemplate>
@@ -182,6 +223,27 @@
         </DataTemplate>
         <DataTemplate DataType="vm:CustomerFormViewModel">
             <local:CustomerFormView />
+        </DataTemplate>
+        <DataTemplate DataType="vm:OrderListViewModel">
+            <local:OrderListView />
+        </DataTemplate>
+        <DataTemplate DataType="vm:OrderCreateViewModel">
+            <local:OrderCreateView />
+        </DataTemplate>
+        <DataTemplate DataType="vm:OrderDetailViewModel">
+            <local:OrderDetailView />
+        </DataTemplate>
+        <DataTemplate DataType="vm:StockImportListViewModel">
+            <local:StockImportListView />
+        </DataTemplate>
+        <DataTemplate DataType="vm:StockImportCreateViewModel">
+            <local:StockImportCreateView />
+        </DataTemplate>
+        <DataTemplate DataType="vm:StockImportDetailViewModel">
+            <local:StockImportDetailView />
+        </DataTemplate>
+        <DataTemplate DataType="vm:ReportViewModel">
+            <local:ReportView />
         </DataTemplate>
     </Window.DataTemplates>
 

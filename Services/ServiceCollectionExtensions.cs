@@ -1,5 +1,6 @@
 using System;
 using System.Net.Http;
+using System.Text.Json;
 using bizflow_desktop_app.Models;
 using bizflow_desktop_app.ViewModels;
 using bizflow_desktop_app.Views;
@@ -8,7 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Polly;
 using Polly.Extensions.Http;
-
+using Refit;
 
 namespace bizflow_desktop_app.Services;
 
@@ -31,13 +32,23 @@ public static class ServiceCollectionExtensions
         services.AddSingleton<ISecureTokenStore, DataProtectionTokenStore>();
         services.AddSingleton<ISessionService, SessionService>();
         services.AddSingleton<INavigationService, NavigationService>();
+        services.AddSingleton<IFileSaveService, FileSaveService>();
 
-        // === HttpClient with shared config (BaseAddress, Timeout, Auth, Polly) ===
+        // === Refit clients with shared config (BaseAddress, Timeout, Auth, Polly) ===
         services.AddTransient<AuthMessageHandler>();
 
-        services.AddHttpClientWithDefaults<IApiService, ApiService>();
-        services.AddHttpClientWithDefaults<IProductService, ProductService>();
-        services.AddHttpClientWithDefaults<ICustomerService, CustomerService>();
+        var refitSettings = new RefitSettings
+        {
+            ContentSerializer = new SystemTextJsonContentSerializer(
+                new JsonSerializerOptions { PropertyNameCaseInsensitive = true }),
+        };
+
+        services.AddRefitClientWithDefaults<IApiService>(refitSettings);
+        services.AddRefitClientWithDefaults<IProductService>(refitSettings);
+        services.AddRefitClientWithDefaults<ICustomerService>(refitSettings);
+        services.AddRefitClientWithDefaults<IReportService>(refitSettings);
+        services.AddRefitClientWithDefaults<IOrderService>(refitSettings);
+        services.AddRefitClientWithDefaults<IStockImportService>(refitSettings);
 
         // === ViewModels ===
         services.AddTransient<LoginViewModel>();
@@ -48,6 +59,14 @@ public static class ServiceCollectionExtensions
         services.AddTransient<CustomerListViewModel>();
         services.AddTransient<CustomerDetailViewModel>();
         services.AddTransient<CustomerFormViewModel>();
+        services.AddTransient<DashboardViewModel>();
+        services.AddTransient<OrderListViewModel>();
+        services.AddTransient<OrderCreateViewModel>();
+        services.AddTransient<OrderDetailViewModel>();
+        services.AddTransient<StockImportListViewModel>();
+        services.AddTransient<StockImportCreateViewModel>();
+        services.AddTransient<StockImportDetailViewModel>();
+        services.AddTransient<ReportViewModel>();
 
         // === Views (resolved by ViewLocator via DI) ===
         services.AddTransient<ProductListView>();
@@ -56,29 +75,37 @@ public static class ServiceCollectionExtensions
         services.AddTransient<CustomerListView>();
         services.AddTransient<CustomerDetailView>();
         services.AddTransient<CustomerFormView>();
+        services.AddTransient<DashboardView>();
+        services.AddTransient<OrderListView>();
+        services.AddTransient<OrderCreateView>();
+        services.AddTransient<OrderDetailView>();
+        services.AddTransient<StockImportListView>();
+        services.AddTransient<StockImportCreateView>();
+        services.AddTransient<StockImportDetailView>();
+        services.AddTransient<ReportView>();
 
         return services;
     }
 
     /// <summary>
-    /// Register a typed HttpClient with the shared configuration:
+    /// Register a Refit client with the shared configuration:
     /// BaseAddress + Timeout from ApiSettings, AuthMessageHandler for Bearer token,
     /// Polly retry (2x exponential) + circuit breaker (5 failures, 30s break).
     /// </summary>
-    public static IHttpClientBuilder AddHttpClientWithDefaults<TInterface, TImplementation>(
-        this IServiceCollection services)
+    private static IHttpClientBuilder AddRefitClientWithDefaults<TInterface>(
+        this IServiceCollection services, RefitSettings settings)
         where TInterface : class
-        where TImplementation : class, TInterface
     {
-        return services.AddHttpClient<TInterface, TImplementation>((sp, client) =>
-        {
-            var settings = sp.GetRequiredService<IOptions<ApiSettings>>().Value;
-            client.BaseAddress = new Uri(settings.BaseUrl);
-            client.Timeout = TimeSpan.FromSeconds(settings.TimeoutSeconds);
-        })
-        .AddHttpMessageHandler<AuthMessageHandler>()
-        .AddPolicyHandler(GetRetryPolicy())
-        .AddPolicyHandler(GetCircuitBreakerPolicy());
+        return services.AddRefitClient<TInterface>(settings)
+            .ConfigureHttpClient((sp, client) =>
+            {
+                var apiSettings = sp.GetRequiredService<IOptions<ApiSettings>>().Value;
+                client.BaseAddress = new Uri(apiSettings.BaseUrl);
+                client.Timeout = TimeSpan.FromSeconds(apiSettings.TimeoutSeconds);
+            })
+            .AddHttpMessageHandler<AuthMessageHandler>()
+            .AddPolicyHandler(GetRetryPolicy())
+            .AddPolicyHandler(GetCircuitBreakerPolicy());
     }
 
     /// <summary>
@@ -90,11 +117,7 @@ public static class ServiceCollectionExtensions
             .HandleTransientHttpError()
             .WaitAndRetryAsync(
                 retryCount: 2,
-                sleepDurationProvider: attempt => TimeSpan.FromMilliseconds(200 * attempt),
-                onRetry: (outcome, timespan, retryAttempt, context) =>
-                {
-                    // Logged via ILogger in ApiService
-                });
+                sleepDurationProvider: attempt => TimeSpan.FromMilliseconds(200 * attempt));
     }
 
     /// <summary>

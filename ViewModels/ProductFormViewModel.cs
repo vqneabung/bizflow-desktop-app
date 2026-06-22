@@ -93,7 +93,8 @@ public partial class ProductFormViewModel : ViewModelBase
 
         try
         {
-            var product = await _productService.GetProductAsync(id);
+            var result = await _productService.GetProductAsync(id);
+            var product = result.Data;
             if (product is not null)
             {
                 Name = product.Name;
@@ -138,8 +139,8 @@ public partial class ProductFormViewModel : ViewModelBase
                     ImageKeys: null
                 );
 
-                var result = await _productService.UpdateProductAsync(request);
-                if (result is not null)
+                var updateResult = await _productService.UpdateProductAsync(_editId, request);
+                if (updateResult.Data is not null)
                     _nav.GoBack();
                 else
                 {
@@ -162,8 +163,8 @@ public partial class ProductFormViewModel : ViewModelBase
                     ImageKeys: null
                 );
 
-                var result = await _productService.CreateProductAsync(request);
-                if (result is not null)
+                var createResult = await _productService.CreateProductAsync(request);
+                if (createResult.Data is not null)
                     _nav.GoBack();
                 else
                 {

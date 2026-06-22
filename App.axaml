@@ -25,8 +25,32 @@
         <DataTemplate DataType="vm:CustomerDetailViewModel">
             <views:CustomerDetailView />
         </DataTemplate>
+        <DataTemplate DataType="vm:DashboardViewModel">
+            <views:DashboardView />
+        </DataTemplate>
         <DataTemplate DataType="vm:CustomerFormViewModel">
             <views:CustomerFormView />
+        </DataTemplate>
+        <DataTemplate DataType="vm:OrderListViewModel">
+            <views:OrderListView />
+        </DataTemplate>
+        <DataTemplate DataType="vm:OrderCreateViewModel">
+            <views:OrderCreateView />
+        </DataTemplate>
+        <DataTemplate DataType="vm:OrderDetailViewModel">
+            <views:OrderDetailView />
+        </DataTemplate>
+        <DataTemplate DataType="vm:StockImportListViewModel">
+            <views:StockImportListView />
+        </DataTemplate>
+        <DataTemplate DataType="vm:StockImportCreateViewModel">
+            <views:StockImportCreateView />
+        </DataTemplate>
+        <DataTemplate DataType="vm:StockImportDetailViewModel">
+            <views:StockImportDetailView />
+        </DataTemplate>
+        <DataTemplate DataType="vm:ReportViewModel">
+            <views:ReportView />
         </DataTemplate>
     </Application.DataTemplates>
 
